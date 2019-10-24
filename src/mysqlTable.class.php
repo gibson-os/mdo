@@ -54,11 +54,10 @@ class mysqlTable
      *
      * @param mysqlDatabase $connection Datenbankverbindung
      * @param string $table Tabellenname
-     * @param string $database Datenbankname
      */
-    public function __construct($connection, $table, $database)
+    public function __construct($connection, $table)
 	{
-		$this->database = $database;
+		$this->database = $connection->getDatabaseName();
 		$this->table = $table;
 		$this->setConnection($connection);
 		
@@ -70,7 +69,7 @@ class mysqlTable
                 $this->{$field[0]} = new mysqlField($field, $this->connection);
             }
         } else {
-            $this->connection->sendQuery("SHOW FIELDS FROM `" . $database . "`.`" . $table . "`;");
+            $this->connection->sendQuery("SHOW FIELDS FROM `" . $this->database . "`.`" . $table . "`;");
 		    $fields = array();
             
 		    while ($field = $this->connection->fetchRow()) {

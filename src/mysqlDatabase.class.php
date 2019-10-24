@@ -23,6 +23,10 @@ class mysqlDatabase
 	public $sql;
 	/** @var mysqli_result SQL Result */
 	public $Result;
+    /**
+     * @var string
+     */
+	private $databaseName;
 
     /**
      * Konstruktor
@@ -75,9 +79,15 @@ class mysqlDatabase
      * @param string $database Datenbankname
      * @return bool Im Erfolgsfall true
      */
-    public function useDatabase($database)
+    public function useDatabase(string $database): bool
     {
-        return $this->Mysqli->select_db($database);
+        if (!$this->Mysqli->select_db($database)) {
+            return false;
+        }
+
+        $this->databaseName = $database;
+
+        return true;
     }
 
     /**
@@ -289,6 +299,7 @@ class mysqlDatabase
      * Maskiert und qoutet einen Wert.
      *
      * @param mixed $value Wert
+     * @param bool $withQuotes
      * @return string
      */
     public function escape($value, $withQuotes = true)
@@ -352,6 +363,11 @@ class mysqlDatabase
     public function rollback()
     {
         $this->sendQuery('ROLLBACK');
+    }
+
+    public function getDatabaseName(): string
+    {
+        return $this->databaseName;
     }
 }
 ?>
