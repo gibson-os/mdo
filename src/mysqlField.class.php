@@ -131,9 +131,9 @@ class mysqlField
 	/**
 	* Gibt den Wert zurück
 	*
-	* @return string Wert
+	* @return string|null Wert
 	*/
-	public function getValue()
+	public function getValue(): ?string
 	{
 		if ($this->value == 'NULL') {
             return null;
