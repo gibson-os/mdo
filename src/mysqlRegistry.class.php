@@ -1,123 +1,92 @@
 <?php
-/**
- * Gibson OS
- *
- * @author Benjamin Wollenweber
- * @package GibsonOS\System
- * @copyright 2013
- */
-/**
- * Erzeugt eine singleton Instanz
- */
+declare(strict_types=1);
+
 class mysqlRegistry
 {
-    /** @var null Instanz */
+    /**
+     * @var mysqlRegistry|null
+     */
     private static $instance = null;
-    /** @var array Registry */
-    private $_registry = array();
 
     /**
-     * Konstruktor
-     *
-     * Keine Instanzen erlauben.
+     * @var array
      */
-    private function __construct() {}
+    private $registry = [];
+
+    private function __construct()
+    {
+    }
+
+    private function __clone()
+    {
+    }
 
     /**
-     * Klonen
-     *
-     * Keine Klonen erlauben.
-     */
-    private function __clone() {}
-    
-    /**
-     * Gibt Registry Instanz zurück
-     *
-     * Gibt die Registry Instanz zurück.
-     *
      * @return mysqlRegistry
      */
     public static function getInstance(): mysqlRegistry
     {
-        if (self::$instance === NULL) {
-            self::$instance = new self;
+        if (self::$instance === null) {
+            self::$instance = new self();
         }
 
         return self::$instance;
     }
-    
+
     /**
-     * Prüft ob Schlüssel existiert.
+     * @param string $key
      *
-     * Prüft ob ein Schlüssel existiert.
-     *
-     * @param string $key Schlüssel
-     * @return boolean
+     * @return bool
      */
-    public function exists($key)
+    public function exists(string $key): bool
     {
-        return array_key_exists($key, $this->_registry);
+        return array_key_exists($key, $this->registry);
     }
-   
+
     /**
-     * Lädt Registry aus Session
+     * @param string $name
      *
-     * Lädt die Registry aus der Session.<br>
-     * Wenn der Schlüssel $name nicht existiert, wird false zurückgegeben.
-     *
-     * @param string $name Name
-     * @return boolean
+     * @return bool
      */
-    public function loadFromSession($name = 'REGISTRY')
+    public function loadFromSession(string $name = 'REGISTRY'): bool
     {
         if (array_key_exists($name, $_SESSION)) {
-            $this->_registry = $_SESSION[$name];
+            $this->registry = $_SESSION[$name];
+
             return true;
         }
 
         return false;
     }
-    
+
     /**
-     * Speichert Registry in Session
-     *
-     * Speichert Registry in der Session zwischen.<br>
-     * Der Schlüssel kann optional mit übergeben werden.
-     *
-     * @param string $name Name
-     */    
-    public function saveToSession($name = 'REGISTRY')
+     * @param string $name
+     */
+    public function saveToSession(string $name = 'REGISTRY'): void
     {
-        $_SESSION[$name] = $this->_registry;
+        $_SESSION[$name] = $this->registry;
     }
 
     /**
-     * Gibt Wert zurück
+     * @param string $key
      *
-     * Gibt einen Wert anhand des Schlüssel zurück.
-     *
-     * @param string $key Schlüssel
-     * @return mixed
+     * @return bool|mixed
      */
-    public function get($key)
+    public function get(string $key)
     {
-        if (array_key_exists($key, $this->_registry)) {
-            return $this->_registry[$key];
+        if (array_key_exists($key, $this->registry)) {
+            return $this->registry[$key];
         }
 
         return false;
     }
-    
+
     /**
-     * Setzt Wert
-     *
-     * Setzt einen Wert anhand des Schlüssels.
-     *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      */
-    public function set($key, $value)
+    public function set(string $key, $value)
     {
-        $this->_registry[$key] = $value;
+        $this->registry[$key] = $value;
     }
 }

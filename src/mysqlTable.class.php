@@ -1,109 +1,147 @@
 <?php
-/**
- * MDO
- *
- * @author Benjamin Wollenweber
- * @package MDO
- * @copyright 2013
- */
-/**
- * MySQL Tabelle
- */
+/** @noinspection SqlNoDataSourceInspection */
+declare(strict_types=1);
+
 class mysqlTable
 {
-	/** @var mysqlDatabase Datenbankverbindung */
-	var $connection;
-	/** @var array Tabellenfelder */
-	var $fields = array();
-    /** @var string Selektion */
-    var $selectString = '*';
-    /** @var string Tabellen Joins */
-    var $joins = '';
-    /** @var array Select Unions */
-    var $unions = array();
-    /** @var string Union Funktion */
-    var $unionFunc = 'ALL';
-	/** @var string SQL Abfrage */
-	var $sql;
-	/** @var string SQL Where Klausel */
-	var $where;
-	/** @var string SQL Order By Klausel */
-	var $orderBy;
-	/** @var int SQL Limit Klausel */
-	var $limit;
-	/** @var string SQL Select Funktion */
-	var $selectFunc;
-	/** @var string SQL Group By Klausel */
-	var $groupBy;
-	/** @var string SQL Having Klausel */
-	var $having;
-    /** @var string Datenbankname */
-	var $database;
-    /** @var string Tabellenname */
-    var $table;
-
-	/** @var array Datensätze */
-	var $records = array();
-	/** @var int Anzahl an Datensätzen */
-	var $countRecords = 0;
-	/** @var int Ausgewählte Datensätze */
-	var $selectedRecord = 0;
+    /**
+     * @var mysqlDatabase
+     */
+    public $connection;
 
     /**
-     * Konstruktor
-     *
-     * @param mysqlDatabase $connection Datenbankverbindung
-     * @param string $table Tabellenname
+     * @var array
      */
-    public function __construct($connection, $table)
-	{
-		$this->database = $connection->getDatabaseName();
-		$this->table = $table;
-		$this->setConnection($connection);
-		
+    public $fields = [];
+
+    /**
+     * @var string
+     */
+    public $selectString = '*';
+
+    /**
+     * @var string
+     */
+    public $joins = '';
+
+    /**
+     * @var array
+     */
+    public $unions = [];
+
+    /**
+     * @var string
+     */
+    public $unionFunc = 'ALL';
+
+    /**
+     * @var string
+     */
+    public $sql;
+
+    /**
+     * @var string
+     */
+    public $where;
+
+    /**
+     * @var string
+     */
+    public $orderBy;
+
+    /**
+     * @var string
+     */
+    public $limit;
+
+    /**
+     * @var string
+     */
+    public $selectFunc;
+
+    /**
+     * @var string
+     */
+    public $groupBy;
+
+    /**
+     * @var string
+     */
+    public $having;
+
+    /**
+     * @var string
+     */
+    public $database;
+
+    /**
+     * @var string
+     */
+    public $table;
+
+    /**
+     * @var array
+     */
+    public $records = [];
+
+    /**
+     * @var int
+     */
+    public $countRecords = 0;
+
+    /**
+     * @var int
+     */
+    public $selectedRecord = 0;
+
+    /**
+     * mysqlTable constructor.
+     *
+     * @param mysqlDatabase $connection
+     * @param string        $table
+     */
+    public function __construct(mysqlDatabase $connection, string $table)
+    {
+        $this->database = $connection->getDatabaseName();
+        $this->table = $table;
+        $this->setConnection($connection);
+
         $registry = mysqlRegistry::getInstance();
-        
+
         if ($registry->exists('mdo_' . $table)) {
             foreach ($registry->get('mdo_' . $table) as $field) {
                 $this->fields[] = $field[0];
                 $this->{$field[0]} = new mysqlField($field, $this->connection);
             }
         } else {
-            $this->connection->sendQuery("SHOW FIELDS FROM `" . $this->database . "`.`" . $table . "`;");
-		    $fields = array();
-            
-		    while ($field = $this->connection->fetchRow()) {
-			    if (preg_match('/\(\d*\)/', $field[1], $length, PREG_OFFSET_CAPTURE)) {
-				    $field[] = substr($length[0][0], 1, strlen($length[0][0]) - 2);
-				    $field[1] = preg_replace('/\(\d*\)/', '', $field[1]);
-			    }
-			    
-			    $this->fields[] = $field[0];
-			    $this->{$field[0]} = new mysqlField($field, $this->connection);
+            $this->connection->sendQuery('SHOW FIELDS FROM `' . $this->database . '`.`' . $table . '`;');
+            $fields = [];
+
+            while ($field = $this->connection->fetchRow()) {
+                if (preg_match('/\(\d*\)/', $field[1], $length, PREG_OFFSET_CAPTURE)) {
+                    $field[] = substr($length[0][0], 1, strlen($length[0][0]) - 2);
+                    $field[1] = preg_replace('/\(\d*\)/', '', $field[1]);
+                }
+
+                $this->fields[] = $field[0];
+                $this->{$field[0]} = new mysqlField($field, $this->connection);
                 $fields[] = $field;
-		    }
-            
+            }
+
             $registry->set('mdo_' . $table, $fields);
         }
-        
-        $this->selectString = $this->_quoteSelectArray($this->fields, $this->table);
-	}
 
-	/**
-	* Setzt die Datenbankverbindung für diese Tabelle
-	*
-	* @param mysqlDatabase $connection Datenbankverbindung
-	*/
-	public function setConnection($connection)
-	{
-		$this->connection = $connection;
-	}
+        $this->selectString = $this->quoteSelectArray($this->fields, $this->table);
+    }
 
     /**
-     * Reset
-     *
-     * Resetet das Select Query
+     * @param mysqlDatabase $connection
      */
+    public function setConnection(mysqlDatabase $connection): void
+    {
+        $this->connection = $connection;
+    }
+
     public function reset()
     {
         $this->load();
@@ -114,114 +152,101 @@ class mysqlTable
         $this->clearJoin();
     }
 
-	/**
-	* Lädt ein Datensatz in das Objekt.
+    /**
+     * @param mixed|null $record
      *
-	* Der Datensatz kann dabei ein indiziertes Array, ein Assoziatives Array oder ein Objekt dieser Klasse sein.
-	*
-	* @param mixed $record Datensatz
-	* @return boolean Wenn erfolgreich true
-	*/
-	public function load($record = null)
-	{
-		if (is_object($record)) {
-			foreach ($this->fields as $field) {
-				if (isset($record->{$field})) {
+     * @return bool
+     */
+    public function load($record = null): bool
+    {
+        if (is_object($record)) {
+            foreach ($this->fields as $field) {
+                if (isset($record->{$field})) {
                     $this->{$field}->setValue($record->{$field});
                 }
             }
-		} else if (is_array($record)) {
-			if (key($record)) {
-				foreach ($this->fields as $field) {
-					if (
+        } elseif (is_array($record)) {
+            if (key($record)) {
+                foreach ($this->fields as $field) {
+                    if (
                         isset($record[$field]) ||
-                        is_null($record[$field])
+                        null === $record[$field]
                     ) {
                         $this->{$field}->setValue($record[$field]);
                     }
                 }
             } else {
-				foreach ($this->fields as $index => $field) {
-					if (
+                foreach ($this->fields as $index => $field) {
+                    if (
                         isset($record[$index]) ||
-                        is_null($record[$field])
+                        null === $record[$field]
                     ) {
                         $this->{$field}->setValue($record[$index]);
                     }
                 }
             }
-		} else {
-			foreach ($this->fields as $field) {
-				$this->{$field}->setDefaultValue();
+        } else {
+            foreach ($this->fields as $field) {
+                $this->{$field}->setDefaultValue();
             }
 
-			return false;
-		}
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
     /**
-     * Erweitert die Auswahl
-     *
-     * Erweitert die Auswahl um weitere Felder.
-     *
-     * @param string|array $select Auswahl
-     * @param string|null $table Tabellenname
+     * @param string|array $select
+     * @param string|null  $table
      */
-    public function appendSelectString($select, $table = null)
+    public function appendSelectString($select, string $table = null): void
     {
         if (is_array($select)) {
-            $this->selectString .= ',' . $this->_quoteSelectArray($select, $table);
+            $this->selectString .= ',' . $this->quoteSelectArray($select, $table);
         } else {
             $this->selectString .= ',' . $select;
         }
     }
 
     /**
-     * Setzt die Auswahl
-     *
-     * Setzt die Auswahl des SQL Query.
-     *
-     * @param string|array|null $select Auswahl
-     * @param string|null $table Tabellenname
+     * @param string|array|null $select
+     * @param string|null       $table
      */
-    public function setSelectString($select = null, $table = null)
+    public function setSelectString($select = null, string $table = null): void
     {
         if ($select) {
             if (is_array($select)) {
-                $this->selectString = $this->_quoteSelectArray($select, $table);
+                $this->selectString = $this->quoteSelectArray($select, $table);
             } else {
                 $this->selectString = $select;
             }
         } else {
-            $this->selectString = $this->_quoteSelectArray($this->fields, $this->table);
+            $this->selectString = $this->quoteSelectArray($this->fields, $this->table);
         }
     }
 
     /**
-     * Quotet Auswahl
+     * @param array       $select
+     * @param string|null $table
      *
-     * Quotet die Auswahl.
-     *
-     * @param array $select Auswahl
-     * @param string|null $table Tabellenname
      * @return string
      */
-    private function _quoteSelectArray($select, $table = null)
+    private function quoteSelectArray(array $select, string $table = null): string
     {
         if ($table) {
-            return "`" . $table . "`.`" . implode("`, `" . $table . "`.`", $select) . "`";
-        } else {
-            return "`" . implode("`, `", $select) . "`";
+            return '`' . $table . '`.`' . implode('`, `' . $table . '`.`', $select) . '`';
         }
+
+        return '`' . implode('`, `', $select) . '`';
     }
 
     /**
      * @param string $set
+     *
      * @return bool
      */
-    public function update($set)
+    public function update(string $set): bool
     {
         $this->sql = 'UPDATE `' . $this->database . '`.`' . $this->table . '` SET ' . $set . ' ' . $this->where;
 
@@ -229,107 +254,98 @@ class mysqlTable
     }
 
     /**
-     * Gibt Select Query zurück
+     * @param string|null $select
+     * @param bool        $union
      *
-     * Gibt MySQL Select Query zurück.
-     *
-     * @param string|null $select Auswahl
-     * @param bool $union Select Union
      * @return string
      */
-    public function getSelect($select = null, $union = false)
+    public function getSelect(string $select = null, bool $union = false): string
     {
         if (!$select) {
             $select = $this->selectString;
         }
-        
+
         if (
             $union &&
             count($this->unions) > 1
         ) {
             return '(' . trim(implode(') UNION ' . $this->unionFunc . ' (', $this->unions)) . ') ' . $this->orderBy . $this->limit . ';';
-        } else {
-            return trim("SELECT " . $this->selectFunc . $select . " FROM `" . $this->database . "`.`" . $this->table . "`" . $this->joins . " " . $this->where . $this->groupBy . $this->having . $this->orderBy . $this->limit) . ";";
         }
+
+        return trim('SELECT ' . $this->selectFunc . $select . ' FROM `' . $this->database . '`.`' . $this->table . '`' . $this->joins . ' ' . $this->where . $this->groupBy . $this->having . $this->orderBy . $this->limit) . ';';
     }
 
     /**
-     * Führt SQL Query aus
+     * Führt SQL Query aus.
      *
      * Führt ein SQL Query aus mit dem Ziel Datensätze zu erhalten.
      *
-     * @param bool $loadRecord Wenn true werden die Datensätze in die Eigenschaft records geladen
-     * @param null $select Gibt an welche Felder oder MySQL Funktion selektiert werden sollen
-     * @param bool $union Select Union
+     * @param bool        $loadRecord Wenn true werden die Datensätze in die Eigenschaft records geladen
+     * @param string|null $select     Gibt an welche Felder oder MySQL Funktion selektiert werden sollen
+     * @param bool        $union      Select Union
+     *
      * @return bool|int Anzahl der Datensätze. Im Fehlerfall false
      */
-    public function select($loadRecord = true, $select = null, $union = false)
-	{
+    public function select(bool $loadRecord = true, string $select = null, bool $union = false)
+    {
         $this->sql = $this->getSelect($select, $union);
-        
-		if ($this->connection->sendQuery($this->sql)) {
-			if ($loadRecord) {
-				$this->records = $this->connection->fetchAssocList();
 
-				if ($this->first()) {
-					$this->countRecords = count($this->records);
-				} else {
-					$this->countRecords = 0;
+        if ($this->connection->sendQuery($this->sql)) {
+            if ($loadRecord) {
+                $this->records = $this->connection->fetchAssocList();
+
+                if ($this->first()) {
+                    $this->countRecords = count($this->records);
+                } else {
+                    $this->countRecords = 0;
                 }
-			} else {
+            } else {
                 return true;
             }
 
-			return $this->countRecords;
-		} else {
-			unset($this->records);
-			$this->countRecords = 0;
+            return $this->countRecords;
+        }
+        unset($this->records);
+        $this->countRecords = 0;
 
-			return false;
-		}
-	}
+        return false;
+    }
 
     /**
-     * Führt SQL Query aus
+     * Führt SQL Query aus.
      *
      * Führt ein SQL Query mit Union aus mit dem Ziel Datensätze zu erhalten.
      *
      * @param bool $loadRecord Wenn true werden die Datensätze in die Eigenschaft records geladen
+     *
      * @return bool|int
      */
-    public function selectUnion($loadRecord = true)
+    public function selectUnion(bool $loadRecord = true)
     {
-	    return $this->select($loadRecord, null, true);
-	}
+        return $this->select($loadRecord, null, true);
+    }
 
     /**
-     * Führt SQL Query aus
+     * @param string $function
      *
-     * Führt ein SQL Query aus mit dem Ziel das Ergebniss einer oder mehrerer Aggregatfunktionen zu erhalten.
-     *
-     * @param string $function Aggregatfunktionen
-     * @return array|bool Mit der Rückgabe der Aggregatfunktionen
+     * @return string[]|null
      */
-    public function selectAggregate($function)
-	{
-		if (!$this->select(false, $function)) {
-            return false;
+    public function selectAggregate(string $function): ?array
+    {
+        if (!$this->select(false, $function)) {
+            return null;
         }
 
-		return $this->connection->fetchRow();
-	}
+        return $this->connection->fetchRow();
+    }
 
     /**
-     * Gibt Speicher Query zurück
-     *
-     * Gibt MySQL Speicher Query zurück.
-     *
      * @return string
      */
-    public function getSave()
+    public function getSave(): string
     {
         $sql = 'INSERT INTO `' . $this->database . '`.`' . $this->table . '` SET ';
-        $fieldString = null;
+        $fieldString = '';
 
         foreach ($this->fields as $field) {
             /** @var mysqlField $fieldObject */
@@ -346,20 +362,17 @@ class mysqlTable
         }
 
         $fieldString = mb_substr($fieldString, 0, -2);
-        
+
         return $sql . $fieldString . ' ON DUPLICATE KEY UPDATE ' . $fieldString;
     }
 
     /**
-     * Führt SQL Query aus
-     *
-     * Führt ein Query aus mit dem Ziel einen Datensatz zu speichern (SQL REPLACE).
-     *
-     * @return bool Wenn erfolgreich true
      * @throws Exception
+     *
+     * @return bool
      */
-    public function save()
-	{
+    public function save(): bool
+    {
         $this->sql = $this->getSave();
 
         if (!$this->connection->sendQuery($this->sql)) {
@@ -367,365 +380,275 @@ class mysqlTable
         }
 
         return true;
-	}
+    }
 
     /**
-     * Lädt Datensatz
-     *
-     * Lädt den zuletzt gespeicherten Datensatz.
-     *
-     * @return bool Wenn erfolgreich true
+     * @return bool
      */
-    public function getReplacedRecord()
-	{
-        $where = null;
-        
-		foreach ($this->fields as $field) {
-			if ($this->{$field}->getValue()) {
-                $where .= "`" . $field . "`=" . $this->{$field}->getSQLValue() . " && ";
+    public function getReplacedRecord(): bool
+    {
+        $where = '';
+
+        foreach ($this->fields as $field) {
+            if ($this->{$field}->getValue()) {
+                $where .= '`' . $field . '`=' . $this->{$field}->getSQLValue() . ' && ';
             }
-		}
-        
-		$where = substr($where, 0, strlen($where) - 4);
-
-		$this->setWhere($where);
-		$this->select();
-		$this->setWhere();
-		
-		if ($this->countRecords() == 1) {
-			return true;
-        } else {
-			return false;
         }
-	}
+
+        $where = substr($where, 0, strlen($where) - 4);
+
+        $this->setWhere($where);
+        $this->select();
+        $this->setWhere();
+
+        if ($this->countRecords() == 1) {
+            return true;
+        }
+
+        return false;
+    }
 
     /**
-     * Gibt Query zurück
-     *
-     * Gibt Delete Query zurück.
-     *
-     * @return string Delete Query
+     * @return string
      */
-    public function getDelete()
+    public function getDelete(): string
     {
         if (strlen($this->where)) {
-            $sql = "DELETE FROM `" . $this->database . "`.`" . $this->table . "` " . $this->where . ";";
+            $sql = 'DELETE FROM `' . $this->database . '`.`' . $this->table . '` ' . $this->where . ';';
         } else {
-            $sql = "DELETE FROM `" . $this->database . "`.`" . $this->table . "` WHERE ";
-            
+            $sql = 'DELETE FROM `' . $this->database . '`.`' . $this->table . '` WHERE ';
+
             foreach ($this->fields as $field) {
-                if (is_null($this->{$field}->getValue())) {
-                    $sql .= "`" . $field . "` IS NULL AND ";
+                if (null === $this->{$field}->getValue()) {
+                    $sql .= '`' . $field . '` IS NULL AND ';
                 } else {
-                    $sql .= "`" . $field . "`=" . $this->{$field}->getSQLValue() . " AND ";
+                    $sql .= '`' . $field . '`=' . $this->{$field}->getSQLValue() . ' AND ';
                 }
             }
-            
-            $sql = substr($sql, 0, strlen($sql) - 5) . ";";
+
+            $sql = substr($sql, 0, strlen($sql) - 5) . ';';
             // Datensatz aus Array löschen!
         }
-        
+
         return $sql;
     }
 
     /**
-     * Führt SQL Query aus
-     *
-     * Führt ein Query aus mit dem Ziel Datensätze zu löschen.
-     *
      * @return bool
      */
-    public function delete()
-	{
+    public function delete(): bool
+    {
         $this->sql = $this->getDelete();
+
         return $this->connection->sendQuery($this->sql);
-	}
+    }
 
     /**
-     * Lädt Datensatz
-     *
-     * Lädt den ersten selektierten Datensatz.
-     *
-     * @return bool Wenn erfolgreich true
+     * @return bool
      */
-    public function first()
-	{
-		if (isset($this->records[0]) && $this->load($this->records[0])) {
+    public function first(): bool
+    {
+        if (isset($this->records[0]) && $this->load($this->records[0])) {
             $this->selectedRecord = 0;
-			return true;
+
+            return true;
         }
-            
-		return false;
-	}
+
+        return false;
+    }
 
     /**
-     * Lädt Datensatz
-     *
-     * Lädt den letzten selektierten Datensatz.
-     *
-     * @return bool Wenn erfolgreich true
+     * @return bool
      */
-    public function last()
-	{
-		if (
+    public function last(): bool
+    {
+        if (
             isset($this->records[$this->countRecords - 1]) &&
             $this->load($this->records[$this->countRecords - 1])
         ) {
             $this->selectedRecord = $this->countRecords - 1;
-			return true;
+
+            return true;
         }
-            
-		return false;
-	}
 
-    /**
-     * Lädt Datensatz
-     *
-     * Lädt den nächsten selektierten Datensatz.
-     *
-     * @return bool Wenn erfolgreich true
-     */
-	public function next()
-	{
-		if ($this->selectedRecord < $this->countRecords) {
-			if(
-                isset($this->records[$this->selectedRecord + 1]) &&
-                $this->load($this->records[$this->selectedRecord + 1])
-            ) {
-                $this->selectedRecord++;
-				return true;
-            }
-		}
-        
-		return false;
-	}
-
-    /**
-     * Lädt Datensatz
-     *
-     * Lädt den voherigen selektierten Datensatz.
-     *
-     * @return bool Wenn erfolgreich true
-     */
-	public function previous()
-	{
-		if ($this->selectedRecord != 0) {
-			if (
-                isset($this->records[$this->selectedRecord - 1]) &&
-                $this->load($this->records[$this->selectedRecord - 1])
-            ) {
-                $this->selectedRecord--;
-				return true;
-            }
-		}
-        
-		return false;
-	}
-
-    /**
-     * Erweitert das Select Query
-     *
-     * Erweitert das Select Query um eine weitere Tabelle.
-     *
-     * @param string $table Tabelle die gejoint wird
-     * @param string $on Bedingung des joins
-     */
-    public function appendJoin($table, $on)
-    {
-        $this->joins .= " JOIN " . $table . " ON " . $on;
+        return false;
     }
 
     /**
-     * Entfernt Joins
-     *
-     * Entfernt alle Joins.
+     * @return bool
      */
-    public function clearJoin()
+    public function next(): bool
+    {
+        if ($this->selectedRecord < $this->countRecords) {
+            if (
+                isset($this->records[$this->selectedRecord + 1]) &&
+                $this->load($this->records[$this->selectedRecord + 1])
+            ) {
+                ++$this->selectedRecord;
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function previous(): bool
+    {
+        if ($this->selectedRecord != 0) {
+            if (
+                isset($this->records[$this->selectedRecord - 1]) &&
+                $this->load($this->records[$this->selectedRecord - 1])
+            ) {
+                --$this->selectedRecord;
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $table
+     * @param string $on
+     */
+    public function appendJoin(string $table, string $on): void
+    {
+        $this->joins .= ' JOIN ' . $table . ' ON ' . $on;
+    }
+
+    public function clearJoin(): void
     {
         $this->joins = '';
     }
 
     /**
-     * Erweitert das Select Query
-     *
-     * Erweitert das Select Query um eine weitere Tabelle.
-     *
-     * @param string $table Tabelle die gejoint wird
-     * @param string $on Bedingung des joins
+     * @param string $table
+     * @param string $on
      */
-    public function appendJoinLeft($table, $on)
+    public function appendJoinLeft(string $table, string $on): void
     {
-        $this->joins .= " LEFT JOIN " . $table . " ON " . $on;
+        $this->joins .= ' LEFT JOIN ' . $table . ' ON ' . $on;
     }
 
     /**
-     * Erweitert das Select Query
-     *
-     * Erweitert Query um ein oder mehrere Selects.
-     *
-     * @param string|null $query Select Query
-     * @param string|null $select Auswahl
+     * @param string|null $query
+     * @param string|null $select
      */
-    public function appendUnion($query = null, $select = null)
+    public function appendUnion(string $query = null, string $select = null): void
     {
         if ($query) {
             $query = preg_replace('/;/', '', $query);
         } else {
             $query = mb_substr($this->getSelect($select), 0, -1);
         }
-        
+
         $this->unions[] = $query;
     }
 
     /**
-     * Setzt SQL Select Funktion
-     *
-     * Setzt eine SQL Select Funktion die beim select mit ausgeführt wird.
-     *
-     * @param string|null $function Funktion
+     * @param string|null $function
      */
-    public function setSelectFunc($function = null)
-	{
-		if ($function) {
-			$this->selectFunc = $function . " ";
-		} else {
-			$this->selectFunc = "";
-        }
-	}
-
-    /**
-     * Setzt SQL Where
-     *
-     * Setzt die SQL Where Klausel.
-     *
-     * @param string|null $where SQL Where Klausel
-     */
-    public function setWhere($where = null)
-	{
-		if ($where) {
-			$this->where = "WHERE " . $where . " ";
+    public function setSelectFunc(string $function = null): void
+    {
+        if ($function) {
+            $this->selectFunc = $function . ' ';
         } else {
-			$this->where = "";
+            $this->selectFunc = '';
         }
-	}
+    }
 
     /**
-     * Setzt SQL Group By
-     *
-     * Setzt eine SQL Group By Klausel.
-     *
-     * @param string|bool $groupBy SQL Group By Klausel
-     * @param string|bool $having Having Klausel
+     * @param string|null $where
      */
-    public function setGroupBy($groupBy = false, $having = false)
-	{
-		if ($groupBy) {
-			$this->groupBy = "GROUP BY " . $groupBy . " ";
-
-			if ($having) {
-				$this->having = "HAVING " . $having . " ";
-            } else {
-				$this->having = "";
-            }
-		} else {
-			$this->groupBy = "";
-			$this->having = "";
-		}
-	}
-
-    /**
-     * Setzt SQL Order By
-     *
-     * Setzt eine SQL Order By Klausel.
-     *
-     * @param string|bool $orderBy SQL Order By Klausel
-     */
-    public function setOrderBy($orderBy = false)
-	{
-		if ($orderBy) {
-			$this->orderBy = "ORDER BY " . $orderBy . " ";
+    public function setWhere(string $where = null): void
+    {
+        if ($where) {
+            $this->where = 'WHERE ' . $where . ' ';
         } else {
-			$this->orderBy = "";
+            $this->where = '';
         }
-	}
+    }
 
     /**
-     * Setzt SQL Limit
-     *
-     * Setzt eine SQL Limit Klausel.
-     *
-     * @param int|bool $rows Anzahl an Datensätzen
-     * @param int|bool $from Angefangen von Datensatz
+     * @param string|null $groupBy
+     * @param string|null $having
      */
-    public function setLimit($rows = false, $from = false)
-	{
-		if ($from) {
-			$this->limit = "LIMIT " . $from . ", " . $rows;
-        } else if ($rows) {
-			$this->limit = "LIMIT " . $rows;
+    public function setGroupBy(string $groupBy = null, string $having = null): void
+    {
+        if ($groupBy === null) {
+            $this->groupBy = '';
+            $this->having = '';
         } else {
-			$this->limit = "";
+            $this->groupBy = 'GROUP BY ' . $groupBy . ' ';
+            $this->having = $having === null ? '' : 'HAVING ' . $having . ' ';
         }
-	}
+    }
 
     /**
-     * Gibt Datensätze zurück.
-     *
-     * Gibt ein Array mit allen selektierten Datensätzen zurück.
-     *
-     * @return array Datensätze
+     * @param string|null $orderBy
      */
-    public function getRecords()
-	{
-		return $this->records;
-	}
+    public function setOrderBy(string $orderBy = null): void
+    {
+        $this->orderBy = $orderBy === null ? '' : 'ORDER BY ' . $orderBy . ' ';
+    }
 
     /**
-     * Gibt aktuellen Datensatz zurück.
-     *
-     * Gibt ein Array mit dem aktuellen Datensatz zurück.
-     *
-     * @return array Datensatz
+     * @param int|null $rows
+     * @param int|null $from
      */
-    public function getSelectedRecord()
+    public function setLimit(int $rows = null, int $from = null): void
+    {
+        if (!empty($from)) {
+            $this->limit = 'LIMIT ' . $from . ', ' . $rows;
+        } elseif (!empty($rows)) {
+            $this->limit = 'LIMIT ' . $rows;
+        } else {
+            $this->limit = '';
+        }
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getRecords(): array
+    {
+        return $this->records;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getSelectedRecord(): array
     {
         return $this->records[$this->selectedRecord];
     }
 
     /**
-     * Gibt Anzahl an Datensätzen zurück.
-     *
-     * Gibt die Anzahl der selektierten Datensätze zurück.
-     *
-     * @return int Anzahl an Datensätzen
+     * @return int
      */
-    public function countRecords()
-	{
-		return $this->countRecords;
-	}
+    public function countRecords(): int
+    {
+        return $this->countRecords;
+    }
 
     /**
-     * Gibt Datenbankname zurück
-     *
-     * Gibt den Datenbanknamen zurück.
-     *
-     * @return string Datenbankname
+     * @return string
      */
-    public function getDBName()
-	{
-		return $this->database;
-	}
+    public function getDBName(): string
+    {
+        return $this->database;
+    }
 
     /**
-     * Gibt Tabellennamen zurück
-     *
-     * Gibt den Tabellennamen zurück.
-     *
-     * @return string Tabellenname
+     * @return string
      */
-    public function getTableName()
-	{
-		return $this->table;
-	}
+    public function getTableName(): string
+    {
+        return $this->table;
+    }
 }
-?>
