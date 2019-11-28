@@ -108,9 +108,12 @@ class mysqlField
         }
     }
 
-    public function setValue(string $value, string $type = ''): bool
+    /**
+     * @param mixed $value
+     */
+    public function setValue($value, string $type = ''): bool
     {
-        $value = trim(stripslashes($value));
+        $value = trim(stripslashes((string) $value));
 
         if (strlen($value)) {
             if (
