@@ -66,9 +66,6 @@ class mysqlField
 
     /**
      * mysqlField constructor.
-     *
-     * @param array         $field
-     * @param mysqlDatabase $connection
      */
     public function __construct(array $field, mysqlDatabase $connection)
     {
@@ -92,11 +89,11 @@ class mysqlField
         if ($this->default == 'CURRENT_TIMESTAMP') {
             $this->setValue($this->default, 'FUNC');
         } elseif (
-            !strlen($this->default) &&
+            $this->default === null &&
             $this->null == 'YES'
         ) {
             $this->setValue('NULL', 'FUNC');
-        } elseif (strlen($this->default)) {
+        } elseif (!empty($this->default)) {
             if ($this->default === 'current_timestamp()') {
                 $this->setValue('current_timestamp()', 'FUNC');
 
@@ -111,12 +108,6 @@ class mysqlField
         }
     }
 
-    /**
-     * @param string $value
-     * @param string $type
-     *
-     * @return bool
-     */
     public function setValue(string $value, string $type = ''): bool
     {
         $value = trim(stripslashes($value));
@@ -142,9 +133,6 @@ class mysqlField
         return true;
     }
 
-    /**
-     * @return string
-     */
     public function getSQLValue(): string
     {
         if ($this->valueType == 'FUNC') {
@@ -166,41 +154,26 @@ class mysqlField
         return $this->value;
     }
 
-    /**
-     * @return string
-     */
     public function getValueType(): string
     {
         return $this->valueType;
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * @return string
-     */
     public function getDefaultValue(): string
     {
         return $this->default;
     }
 
-    /**
-     * @return float
-     */
     public function getLength(): float
     {
         return $this->length;
     }
 
-    /**
-     * @return bool
-     */
     public function isAutoIncrement(): bool
     {
         return $this->extra === 'auto_increment';

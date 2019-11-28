@@ -21,9 +21,6 @@ class mysqlRegistry
     {
     }
 
-    /**
-     * @return mysqlRegistry
-     */
     public static function getInstance(): mysqlRegistry
     {
         if (self::$instance === null) {
@@ -33,21 +30,11 @@ class mysqlRegistry
         return self::$instance;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
     public function exists(string $key): bool
     {
         return array_key_exists($key, $this->registry);
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
     public function loadFromSession(string $name = 'REGISTRY'): bool
     {
         if (array_key_exists($name, $_SESSION)) {
@@ -59,17 +46,12 @@ class mysqlRegistry
         return false;
     }
 
-    /**
-     * @param string $name
-     */
     public function saveToSession(string $name = 'REGISTRY'): void
     {
         $_SESSION[$name] = $this->registry;
     }
 
     /**
-     * @param string $key
-     *
      * @return bool|mixed
      */
     public function get(string $key)
@@ -82,8 +64,7 @@ class mysqlRegistry
     }
 
     /**
-     * @param string $key
-     * @param mixed  $value
+     * @param mixed $value
      */
     public function set(string $key, $value)
     {

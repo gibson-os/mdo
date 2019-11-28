@@ -96,9 +96,6 @@ class mysqlTable
 
     /**
      * mysqlTable constructor.
-     *
-     * @param mysqlDatabase $connection
-     * @param string        $table
      */
     public function __construct(mysqlDatabase $connection, string $table)
     {
@@ -134,9 +131,6 @@ class mysqlTable
         $this->selectString = $this->quoteSelectArray($this->fields, $this->table);
     }
 
-    /**
-     * @param mysqlDatabase $connection
-     */
     public function setConnection(mysqlDatabase $connection): void
     {
         $this->connection = $connection;
@@ -154,8 +148,6 @@ class mysqlTable
 
     /**
      * @param mixed|null $record
-     *
-     * @return bool
      */
     public function load($record = null): bool
     {
@@ -198,7 +190,6 @@ class mysqlTable
 
     /**
      * @param string|array $select
-     * @param string|null  $table
      */
     public function appendSelectString($select, string $table = null): void
     {
@@ -211,7 +202,6 @@ class mysqlTable
 
     /**
      * @param string|array|null $select
-     * @param string|null       $table
      */
     public function setSelectString($select = null, string $table = null): void
     {
@@ -226,12 +216,6 @@ class mysqlTable
         }
     }
 
-    /**
-     * @param array       $select
-     * @param string|null $table
-     *
-     * @return string
-     */
     private function quoteSelectArray(array $select, string $table = null): string
     {
         if ($table) {
@@ -241,11 +225,6 @@ class mysqlTable
         return '`' . implode('`, `', $select) . '`';
     }
 
-    /**
-     * @param string $set
-     *
-     * @return bool
-     */
     public function update(string $set): bool
     {
         $this->sql = 'UPDATE `' . $this->database . '`.`' . $this->table . '` SET ' . $set . ' ' . $this->where;
@@ -253,12 +232,6 @@ class mysqlTable
         return $this->connection->sendQuery($this->sql);
     }
 
-    /**
-     * @param string|null $select
-     * @param bool        $union
-     *
-     * @return string
-     */
     public function getSelect(string $select = null, bool $union = false): string
     {
         if (!$select) {
@@ -326,8 +299,6 @@ class mysqlTable
     }
 
     /**
-     * @param string $function
-     *
      * @return string[]|null
      */
     public function selectAggregate(string $function): ?array
@@ -339,9 +310,6 @@ class mysqlTable
         return $this->connection->fetchRow();
     }
 
-    /**
-     * @return string
-     */
     public function getSave(): string
     {
         $sql = 'INSERT INTO `' . $this->database . '`.`' . $this->table . '` SET ';
@@ -368,8 +336,6 @@ class mysqlTable
 
     /**
      * @throws Exception
-     *
-     * @return bool
      */
     public function save(): bool
     {
@@ -382,9 +348,6 @@ class mysqlTable
         return true;
     }
 
-    /**
-     * @return bool
-     */
     public function getReplacedRecord(): bool
     {
         $where = '';
@@ -408,9 +371,6 @@ class mysqlTable
         return false;
     }
 
-    /**
-     * @return string
-     */
     public function getDelete(): string
     {
         if (strlen($this->where)) {
@@ -433,9 +393,6 @@ class mysqlTable
         return $sql;
     }
 
-    /**
-     * @return bool
-     */
     public function delete(): bool
     {
         $this->sql = $this->getDelete();
@@ -443,9 +400,6 @@ class mysqlTable
         return $this->connection->sendQuery($this->sql);
     }
 
-    /**
-     * @return bool
-     */
     public function first(): bool
     {
         if (isset($this->records[0]) && $this->load($this->records[0])) {
@@ -457,9 +411,6 @@ class mysqlTable
         return false;
     }
 
-    /**
-     * @return bool
-     */
     public function last(): bool
     {
         if (
@@ -474,9 +425,6 @@ class mysqlTable
         return false;
     }
 
-    /**
-     * @return bool
-     */
     public function next(): bool
     {
         if ($this->selectedRecord < $this->countRecords) {
@@ -493,9 +441,6 @@ class mysqlTable
         return false;
     }
 
-    /**
-     * @return bool
-     */
     public function previous(): bool
     {
         if ($this->selectedRecord != 0) {
@@ -512,10 +457,6 @@ class mysqlTable
         return false;
     }
 
-    /**
-     * @param string $table
-     * @param string $on
-     */
     public function appendJoin(string $table, string $on): void
     {
         $this->joins .= ' JOIN ' . $table . ' ON ' . $on;
@@ -526,19 +467,11 @@ class mysqlTable
         $this->joins = '';
     }
 
-    /**
-     * @param string $table
-     * @param string $on
-     */
     public function appendJoinLeft(string $table, string $on): void
     {
         $this->joins .= ' LEFT JOIN ' . $table . ' ON ' . $on;
     }
 
-    /**
-     * @param string|null $query
-     * @param string|null $select
-     */
     public function appendUnion(string $query = null, string $select = null): void
     {
         if ($query) {
@@ -550,9 +483,6 @@ class mysqlTable
         $this->unions[] = $query;
     }
 
-    /**
-     * @param string|null $function
-     */
     public function setSelectFunc(string $function = null): void
     {
         if ($function) {
@@ -562,9 +492,6 @@ class mysqlTable
         }
     }
 
-    /**
-     * @param string|null $where
-     */
     public function setWhere(string $where = null): void
     {
         if ($where) {
@@ -574,10 +501,6 @@ class mysqlTable
         }
     }
 
-    /**
-     * @param string|null $groupBy
-     * @param string|null $having
-     */
     public function setGroupBy(string $groupBy = null, string $having = null): void
     {
         if ($groupBy === null) {
@@ -589,18 +512,11 @@ class mysqlTable
         }
     }
 
-    /**
-     * @param string|null $orderBy
-     */
     public function setOrderBy(string $orderBy = null): void
     {
         $this->orderBy = $orderBy === null ? '' : 'ORDER BY ' . $orderBy . ' ';
     }
 
-    /**
-     * @param int|null $rows
-     * @param int|null $from
-     */
     public function setLimit(int $rows = null, int $from = null): void
     {
         if (!empty($from)) {
@@ -628,25 +544,16 @@ class mysqlTable
         return $this->records[$this->selectedRecord];
     }
 
-    /**
-     * @return int
-     */
     public function countRecords(): int
     {
         return $this->countRecords;
     }
 
-    /**
-     * @return string
-     */
     public function getDBName(): string
     {
         return $this->database;
     }
 
-    /**
-     * @return string
-     */
     public function getTableName(): string
     {
         return $this->table;
