@@ -142,7 +142,7 @@ class mysqlField
             return (string) $this->value;
         }
 
-        return $this->connection->escape($this->value);
+        return $this->connection->escape((string) $this->value);
     }
 
     /**

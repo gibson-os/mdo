@@ -207,18 +207,12 @@ class mysqlDatabase
         return $rows;
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function escapeWithoutQuotes($value): string
+    public function escapeWithoutQuotes(string $value): string
     {
         return $this->Mysqli->real_escape_string($value);
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function escape($value): string
+    public function escape(string $value): string
     {
         $value = $this->escapeWithoutQuotes($value);
 
@@ -230,7 +224,7 @@ class mysqlDatabase
         $data = '';
 
         foreach ($pieces as $piece) {
-            $data .= $this->escape($piece) . $glue;
+            $data .= $this->escape((string) $piece) . $glue;
         }
 
         return mb_substr($data, 0, 0 - mb_strlen($glue));
