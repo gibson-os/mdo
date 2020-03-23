@@ -373,7 +373,7 @@ class mysqlTable
 
     public function getDelete(): string
     {
-        if (strlen($this->where)) {
+        if (!empty($this->where) && strlen($this->where)) {
             $sql = 'DELETE FROM `' . $this->database . '`.`' . $this->table . '` ' . $this->where . ';';
         } else {
             $sql = 'DELETE FROM `' . $this->database . '`.`' . $this->table . '` WHERE ';
