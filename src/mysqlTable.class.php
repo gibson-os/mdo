@@ -106,9 +106,13 @@ class mysqlTable
         $registry = mysqlRegistry::getInstance();
 
         if ($registry->exists('mdo_' . $table)) {
-            foreach ($registry->get('mdo_' . $table) as $field) {
-                $this->fields[] = $field[0];
-                $this->{$field[0]} = new mysqlField($field, $this->connection);
+            $fieldValue = $registry->get('mdo_' . $table);
+
+            if (is_array($fieldValue)) {
+                foreach ($fieldValue as $field) {
+                    $this->fields[] = $field[0];
+                    $this->{$field[0]} = new mysqlField($field, $this->connection);
+                }
             }
         } else {
             $this->connection->sendQuery('SHOW FIELDS FROM `' . $this->database . '`.`' . $table . '`;');
@@ -160,10 +164,7 @@ class mysqlTable
         } elseif (is_array($record)) {
             if (key($record)) {
                 foreach ($this->fields as $field) {
-                    if (
-                        isset($record[$field]) ||
-                        null === $record[$field]
-                    ) {
+                    if (empty($record[$field])) {
                         $this->{$field}->setValue($record[$field]);
                     }
                 }
@@ -171,7 +172,7 @@ class mysqlTable
                 foreach ($this->fields as $index => $field) {
                     if (
                         isset($record[$index]) ||
-                        null === $record[$field]
+                        empty($record[$field])
                     ) {
                         $this->{$field}->setValue($record[$index]);
                     }
