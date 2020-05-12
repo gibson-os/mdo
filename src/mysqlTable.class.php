@@ -164,7 +164,7 @@ class mysqlTable
         } elseif (is_array($record)) {
             if (key($record)) {
                 foreach ($this->fields as $field) {
-                    if (empty($record[$field])) {
+                    if (array_key_exists($field, $record)) {
                         $this->{$field}->setValue($record[$field]);
                     }
                 }
@@ -172,7 +172,7 @@ class mysqlTable
                 foreach ($this->fields as $index => $field) {
                     if (
                         isset($record[$index]) ||
-                        empty($record[$field])
+                        $record[$field] === null
                     ) {
                         $this->{$field}->setValue($record[$index]);
                     }
