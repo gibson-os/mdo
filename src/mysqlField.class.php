@@ -113,7 +113,7 @@ class mysqlField
      */
     public function setValue($value, string $type = ''): bool
     {
-        $value = trim(stripslashes((string) $value));
+        $value = trim((string) $value);
 
         if (strlen($value)) {
             if (
