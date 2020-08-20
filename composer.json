@@ -3,15 +3,15 @@
   "require": {
     "php": "^7.2",
     "ext-mysqli": "*",
-    "ext-mbstring": "*",
-    "vimeo/psalm": "^3.11"
+    "ext-mbstring": "*"
   },
   "require-dev": {
     "codeception/codeception": "^3.1",
     "friendsofphp/php-cs-fixer": "^2.15",
     "phpmd/phpmd": "^2.7",
     "captainhook/captainhook": "^4.5",
-    "captainhook/plugin-composer": "^4.0"
+    "captainhook/plugin-composer": "^4.0",
+    "vimeo/psalm": "^3.11"
   },
   "autoload": {
     "classmap": [
