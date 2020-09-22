@@ -95,6 +95,11 @@ class mysqlTable
     public $selectedRecord = 0;
 
     /**
+     * @var array
+     */
+    private $parameters = [];
+
+    /**
      * mysqlTable constructor.
      */
     public function __construct(mysqlDatabase $connection, string $table)
@@ -250,14 +255,6 @@ class mysqlTable
     }
 
     /**
-     * Führt SQL Query aus.
-     *
-     * Führt ein SQL Query aus mit dem Ziel Datensätze zu erhalten.
-     *
-     * @param bool        $loadRecord Wenn true werden die Datensätze in die Eigenschaft records geladen
-     * @param string|null $select     Gibt an welche Felder oder MySQL Funktion selektiert werden sollen
-     * @param bool        $union      Select Union
-     *
      * @return bool|int Anzahl der Datensätze. Im Fehlerfall false
      */
     public function select(bool $loadRecord = true, string $select = null, bool $union = false)
@@ -279,6 +276,36 @@ class mysqlTable
 
             return $this->countRecords;
         }
+
+        unset($this->records);
+        $this->countRecords = 0;
+
+        return false;
+    }
+
+    /**
+     * @return bool|int Anzahl der Datensätze. Im Fehlerfall false
+     */
+    public function selectPrepared(bool $loadRecord = true, string $select = null, bool $union = false)
+    {
+        $this->sql = $this->getSelect($select, $union);
+
+        if ($this->connection->execute($this->sql, $this->parameters)) {
+            if ($loadRecord) {
+                $this->records = $this->connection->fetchAssocList();
+
+                if ($this->first()) {
+                    $this->countRecords = count($this->records);
+                } else {
+                    $this->countRecords = 0;
+                }
+            } else {
+                return true;
+            }
+
+            return $this->countRecords;
+        }
+
         unset($this->records);
         $this->countRecords = 0;
 
@@ -458,22 +485,28 @@ class mysqlTable
         return false;
     }
 
-    public function appendJoin(string $table, string $on): void
+    public function appendJoin(string $table, string $on): mysqlTable
     {
         $this->joins .= ' JOIN ' . $table . ' ON ' . $on;
+
+        return $this;
     }
 
-    public function clearJoin(): void
+    public function clearJoin(): mysqlTable
     {
         $this->joins = '';
+
+        return $this;
     }
 
-    public function appendJoinLeft(string $table, string $on): void
+    public function appendJoinLeft(string $table, string $on): mysqlTable
     {
         $this->joins .= ' LEFT JOIN ' . $table . ' ON ' . $on;
+
+        return $this;
     }
 
-    public function appendUnion(string $query = null, string $select = null): void
+    public function appendUnion(string $query = null, string $select = null): mysqlTable
     {
         if ($query) {
             $query = preg_replace('/;/', '', $query);
@@ -482,27 +515,33 @@ class mysqlTable
         }
 
         $this->unions[] = $query;
+
+        return $this;
     }
 
-    public function setSelectFunc(string $function = null): void
+    public function setSelectFunc(string $function = null): mysqlTable
     {
         if ($function) {
             $this->selectFunc = $function . ' ';
         } else {
             $this->selectFunc = '';
         }
+
+        return $this;
     }
 
-    public function setWhere(string $where = null): void
+    public function setWhere(string $where = null): mysqlTable
     {
         if ($where) {
             $this->where = 'WHERE ' . $where . ' ';
         } else {
             $this->where = '';
         }
+
+        return $this;
     }
 
-    public function setGroupBy(string $groupBy = null, string $having = null): void
+    public function setGroupBy(string $groupBy = null, string $having = null): mysqlTable
     {
         if ($groupBy === null) {
             $this->groupBy = '';
@@ -511,14 +550,18 @@ class mysqlTable
             $this->groupBy = 'GROUP BY ' . $groupBy . ' ';
             $this->having = $having === null ? '' : 'HAVING ' . $having . ' ';
         }
+
+        return $this;
     }
 
-    public function setOrderBy(string $orderBy = null): void
+    public function setOrderBy(string $orderBy = null): mysqlTable
     {
         $this->orderBy = $orderBy === null ? '' : 'ORDER BY ' . $orderBy . ' ';
+
+        return $this;
     }
 
-    public function setLimit(int $rows = null, int $from = null): void
+    public function setLimit(int $rows = null, int $from = null): mysqlTable
     {
         if (!empty($from)) {
             $this->limit = 'LIMIT ' . $from . ', ' . $rows;
@@ -527,6 +570,8 @@ class mysqlTable
         } else {
             $this->limit = '';
         }
+
+        return $this;
     }
 
     /**
@@ -558,5 +603,19 @@ class mysqlTable
     public function getTableName(): string
     {
         return $this->table;
+    }
+
+    public function setParameters(array $parameters): mysqlTable
+    {
+        $this->parameters = $parameters;
+
+        return $this;
+    }
+
+    public function addParameter($value): mysqlTable
+    {
+        $this->parameters[] = $value;
+
+        return $this;
     }
 }

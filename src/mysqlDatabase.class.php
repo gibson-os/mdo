@@ -42,7 +42,7 @@ class mysqlDatabase
     /**
      * @var mysqli_result
      */
-    public $Result;
+    public $result;
 
     /**
      * @var string
@@ -97,13 +97,47 @@ class mysqlDatabase
         $this->sql = $query;
         $result = $this->Mysqli->query($this->sql);
 
-        if ($result === false) {
+        if (!$result instanceof mysqli_result) {
             return false;
         }
 
-        if ($result instanceof mysqli_result) {
-            $this->Result = $result;
+        $this->result = $result;
+
+        return true;
+    }
+
+    public function execute(string $query, array $parameters): bool
+    {
+        $this->sql = $query;
+        $statement = $this->Mysqli->prepare($this->sql);
+
+        if (!$statement instanceof mysqli_stmt) {
+            return false;
         }
+
+        if (count($parameters)) {
+            $parameterTypes = '';
+
+            foreach ($parameters as $parameter) {
+                if ($parameter == (int) $parameter) {
+                    $parameterTypes .= 'i';
+                } elseif ($parameter == (float) $parameter) {
+                    $parameterTypes .= 'd';
+                } else {
+                    $parameterTypes .= 's';
+                }
+            }
+
+            if (!$statement->bind_param($parameterTypes, ...$parameters)) {
+                return false;
+            }
+        }
+
+        if (!$statement->execute()) {
+            return false;
+        }
+
+        $this->result = $statement->get_result();
 
         return true;
     }
@@ -113,7 +147,7 @@ class mysqlDatabase
      */
     public function fetchArray(): array
     {
-        return (array) $this->Result->fetch_array();
+        return (array) $this->result->fetch_array();
     }
 
     /**
@@ -121,7 +155,7 @@ class mysqlDatabase
      */
     public function fetchRow(): array
     {
-        return (array) $this->Result->fetch_row();
+        return (array) $this->result->fetch_row();
     }
 
     /**
@@ -129,12 +163,12 @@ class mysqlDatabase
      */
     public function fetchAssoc(): array
     {
-        return (array) $this->Result->fetch_assoc();
+        return (array) $this->result->fetch_assoc();
     }
 
     public function fetchObject(): ?stdClass
     {
-        $object = $this->Result->fetch_object();
+        $object = $this->result->fetch_object();
 
         if (!$object instanceof stdClass) {
             return null;
