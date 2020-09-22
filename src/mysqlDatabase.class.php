@@ -97,11 +97,13 @@ class mysqlDatabase
         $this->sql = $query;
         $result = $this->Mysqli->query($this->sql);
 
-        if (!$result instanceof mysqli_result) {
+        if ($result === false) {
             return false;
         }
 
-        $this->result = $result;
+        if ($result instanceof mysqli_result) {
+            $this->result = $result;
+        }
 
         return true;
     }
