@@ -612,7 +612,7 @@ class mysqlTable
         return $this;
     }
 
-    public function addParameter($value): mysqlTable
+    public function addWhereParameter($value): mysqlTable
     {
         $this->whereParameters[] = $value;
 
