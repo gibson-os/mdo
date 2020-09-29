@@ -97,7 +97,7 @@ class mysqlTable
     /**
      * @var array
      */
-    private $parameters = [];
+    private $whereParameters = [];
 
     /**
      * mysqlTable constructor.
@@ -290,7 +290,7 @@ class mysqlTable
     {
         $this->sql = $this->getSelect($select, $union);
 
-        if ($this->connection->execute($this->sql, $this->parameters)) {
+        if ($this->connection->execute($this->sql, $this->whereParameters)) {
             if ($loadRecord) {
                 $this->records = $this->connection->fetchAssocList();
 
@@ -605,16 +605,16 @@ class mysqlTable
         return $this->table;
     }
 
-    public function setParameters(array $parameters): mysqlTable
+    public function setWhereParameters(array $whereParameters): mysqlTable
     {
-        $this->parameters = $parameters;
+        $this->whereParameters = $whereParameters;
 
         return $this;
     }
 
     public function addParameter($value): mysqlTable
     {
-        $this->parameters[] = $value;
+        $this->whereParameters[] = $value;
 
         return $this;
     }
