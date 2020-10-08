@@ -428,6 +428,36 @@ class mysqlTable
         return $this->connection->sendQuery($this->sql);
     }
 
+    public function getDeletePrepared(): string
+    {
+        if (!empty($this->where) && strlen($this->where)) {
+            $sql = 'DELETE FROM `' . $this->database . '`.`' . $this->table . '` ' . $this->where . ';';
+        } else {
+            $sql = 'DELETE FROM `' . $this->database . '`.`' . $this->table . '` WHERE ';
+
+            foreach ($this->fields as $field) {
+                if (null === $this->{$field}->getValue()) {
+                    $sql .= '`' . $field . '` IS NULL AND ';
+                } else {
+                    $sql .= '`' . $field . '`=? AND ';
+                    $this->addWhereParameter($this->{$field}->getValue());
+                }
+            }
+
+            $sql = substr($sql, 0, strlen($sql) - 5) . ';';
+            // Datensatz aus Array löschen!
+        }
+
+        return $sql;
+    }
+
+    public function deletePrepared(): bool
+    {
+        $this->sql = $this->getDeletePrepared();
+
+        return $this->connection->execute($this->sql, $this->whereParameters);
+    }
+
     public function first(): bool
     {
         if (isset($this->records[0]) && $this->load($this->records[0])) {
