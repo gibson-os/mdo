@@ -121,9 +121,9 @@ class mysqlDatabase
             $parameterTypes = '';
 
             foreach ($parameters as $parameter) {
-                if ($parameter == (int) $parameter) {
+                if (is_int($parameter)) {
                     $parameterTypes .= 'i';
-                } elseif ($parameter == (float) $parameter) {
+                } elseif (is_float($parameter)) {
                     $parameterTypes .= 'd';
                 } else {
                     $parameterTypes .= 's';
