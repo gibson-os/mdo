@@ -65,7 +65,6 @@
       <path value="$PROJECT_DIR$/vendor/sebastianfeldmann/git" />
       <path value="$PROJECT_DIR$/vendor/sebastianfeldmann/cli" />
       <path value="$PROJECT_DIR$/vendor/phpmd/phpmd" />
-      <path value="$PROJECT_DIR$/vendor/php-cs-fixer/diff" />
       <path value="$PROJECT_DIR$/vendor/psr/log" />
       <path value="$PROJECT_DIR$/vendor/doctrine/lexer" />
       <path value="$PROJECT_DIR$/vendor/doctrine/annotations" />
@@ -73,18 +72,15 @@
       <path value="$PROJECT_DIR$/vendor/captainhook/plugin-composer" />
       <path value="$PROJECT_DIR$/vendor/captainhook/captainhook" />
       <path value="$PROJECT_DIR$/vendor/nikic/php-parser" />
-      <path value="$PROJECT_DIR$/vendor/paragonie/random_compat" />
       <path value="$PROJECT_DIR$/vendor/friendsofphp/php-cs-fixer" />
       <path value="$PROJECT_DIR$/vendor/symfony/config" />
       <path value="$PROJECT_DIR$/vendor/symfony/dependency-injection" />
       <path value="$PROJECT_DIR$/vendor/symfony/options-resolver" />
-      <path value="$PROJECT_DIR$/vendor/symfony/filesystem" />
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php72" />
       <path value="$PROJECT_DIR$/vendor/symfony/stopwatch" />
       <path value="$PROJECT_DIR$/vendor/sebastianfeldmann/camino" />
       <path value="$PROJECT_DIR$/vendor/symfony/console" />
       <path value="$PROJECT_DIR$/vendor/symfony/event-dispatcher" />
-      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php70" />
       <path value="$PROJECT_DIR$/vendor/openlss/lib-array2xml" />
       <path value="$PROJECT_DIR$/vendor/amphp/byte-stream" />
       <path value="$PROJECT_DIR$/vendor/amphp/amp" />
@@ -107,6 +103,9 @@
       <path value="$PROJECT_DIR$/vendor/symfony/string" />
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-grapheme" />
       <path value="$PROJECT_DIR$/vendor/codeception/lib-asserts" />
+      <path value="$PROJECT_DIR$/vendor/codeception/module-asserts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/filesystem" />
+      <path value="$PROJECT_DIR$/vendor/php-cs-fixer/diff" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
@@ -114,5 +113,10 @@
     <phpunit_settings>
       <PhpUnitSettings custom_loader_path="$PROJECT_DIR$/vendor/autoload.php" />
     </phpunit_settings>
+  </component>
+  <component name="Psalm">
+    <Psalm_settings>
+      <PsalmConfiguration tool_path="$PROJECT_DIR$/vendor/bin/psalm" />
+    </Psalm_settings>
   </component>
 </project>

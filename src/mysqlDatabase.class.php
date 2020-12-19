@@ -275,6 +275,15 @@ class mysqlDatabase
         return "'[[:<:]]" . $this->Mysqli->real_escape_string($search) . "[[:>:]]'";
     }
 
+    public function getUnescapedRegexString(string $search): string
+    {
+        $search = str_replace('.', '\.', $search);
+        $search = str_replace('?', '.', $search);
+        $search = str_replace('*', '.*', $search);
+
+        return '[[:<:]]' . $search . '[[:>:]]';
+    }
+
     public function startTransaction(): void
     {
         $this->sendQuery('START TRANSACTION');
