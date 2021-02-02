@@ -382,7 +382,11 @@ class mysqlTable
         $this->sql = $saveStatement['query'];
 
         if (!$this->connection->execute($this->sql, $saveStatement['parameters'])) {
-            throw new Exception('Error: ' . $this->connection->error() . PHP_EOL . 'Query: ' . $this->sql);
+            throw new Exception(
+                'Error: ' . $this->connection->error() . PHP_EOL .
+                'Query: ' . $this->sql . PHP_EOL .
+                'Parameters: [' . implode(', ', $saveStatement['parameters']) . ']'
+            );
         }
 
         return true;
