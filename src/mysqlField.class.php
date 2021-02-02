@@ -62,7 +62,7 @@ class mysqlField
     /**
      * @var string
      */
-    public $valueType;
+    public $valueType = '';
 
     /**
      * mysqlField constructor.

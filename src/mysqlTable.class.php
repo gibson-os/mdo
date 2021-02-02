@@ -355,6 +355,12 @@ class mysqlTable
                 continue;
             }
 
+            if ($fieldObject->getValueType() === 'FUNC') {
+                $fieldString .= '`' . $field . '`=' . $fieldObject->getSQLValue() . ', ';
+
+                continue;
+            }
+
             $fieldString .= '`' . $field . '`=?, ';
             $parameters[] = $fieldObject->getValue();
         }
