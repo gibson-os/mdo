@@ -338,10 +338,11 @@ class mysqlTable
         return $this->connection->fetchRow();
     }
 
-    public function getSave(): string
+    public function getSave(): array
     {
         $sql = 'INSERT INTO `' . $this->database . '`.`' . $this->table . '` SET ';
         $fieldString = '';
+        $parameters = [];
 
         foreach ($this->fields as $field) {
             /** @var mysqlField $fieldObject */
@@ -354,12 +355,16 @@ class mysqlTable
                 continue;
             }
 
-            $fieldString .= '`' . $field . '`=' . $fieldObject->getSQLValue() . ', ';
+            $fieldString .= '`' . $field . '`=?, ';
+            $parameters[] = $fieldObject->getValue();
         }
 
         $fieldString = mb_substr($fieldString, 0, -2);
 
-        return $sql . $fieldString . ' ON DUPLICATE KEY UPDATE ' . $fieldString;
+        return [
+            'query' => $sql . $fieldString . ' ON DUPLICATE KEY UPDATE ' . $fieldString,
+            'parameters' => array_merge($parameters, $parameters),
+        ];
     }
 
     /**
@@ -367,9 +372,10 @@ class mysqlTable
      */
     public function save(): bool
     {
-        $this->sql = $this->getSave();
+        $saveStatement = $this->getSave();
+        $this->sql = $saveStatement['query'];
 
-        if (!$this->connection->sendQuery($this->sql)) {
+        if (!$this->connection->execute($this->sql, $saveStatement['parameters'])) {
             throw new Exception('Error: ' . $this->connection->error() . PHP_EOL . 'Query: ' . $this->sql);
         }
 
