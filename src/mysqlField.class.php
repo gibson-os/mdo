@@ -121,7 +121,7 @@ class mysqlField
                 (((preg_match('/int/i', $this->type) && preg_match('/^-?\d+$/', $value)) ||                          // Ganzzahlenfeld
                 (preg_match('/(float|double|decimal)/i', $this->type) && preg_match('/^-?\d+\.?\d*$/', $value)) ||  // Gleitzahlenfeld
                 (preg_match('/enum/i', $this->type) && preg_match('/' . $value . '/', $this->type)) ||                    // Auswahl
-                 preg_match('/(char|text|blob|time|date|year)/i', $this->type)) &&                               // Alles andere
+                 preg_match('/(char|text|blob|time|date|year|binary)/i', $this->type)) &&                               // Alles andere
                 (strlen($value) <= $this->length || $this->length == 0))                      // Länge des Feldes
             ) {
                 $this->value = $value;
