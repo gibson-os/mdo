@@ -323,7 +323,7 @@ class mysqlTable
      */
     public function selectUnion(bool $loadRecord = true)
     {
-        return $this->select($loadRecord, null, true);
+        return $this->selectPrepared($loadRecord, null, true);
     }
 
     /**
