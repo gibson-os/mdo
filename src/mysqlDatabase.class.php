@@ -42,6 +42,7 @@ class mysqlDatabase
     {
         $this->Mysqli = new mysqli($this->host, $this->user, $this->pass);
         $this->Mysqli->query("SET NAMES 'utf8';");
+        $this->Mysqli->query('SET CHARACTER SET utf8;');
 
         if (
             !empty($database) &&
