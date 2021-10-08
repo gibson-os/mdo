@@ -75,11 +75,6 @@ class mysqlTable
     public $database;
 
     /**
-     * @var string
-     */
-    public $table;
-
-    /**
      * @var array
      */
     public $records = [];
@@ -102,10 +97,9 @@ class mysqlTable
     /**
      * mysqlTable constructor.
      */
-    public function __construct(mysqlDatabase $connection, string $table)
+    public function __construct(mysqlDatabase $connection, public string $table)
     {
         $this->database = $connection->getDatabaseName();
-        $this->table = $table;
         $this->setConnection($connection);
 
         $registry = mysqlRegistry::getInstance();
@@ -194,10 +188,7 @@ class mysqlTable
         return true;
     }
 
-    /**
-     * @param string|array $select
-     */
-    public function appendSelectString($select, string $table = null): void
+    public function appendSelectString(string|array $select, string $table = null): void
     {
         if (is_array($select)) {
             $this->selectString .= ',' . $this->quoteSelectArray($select, $table);
@@ -206,10 +197,7 @@ class mysqlTable
         }
     }
 
-    /**
-     * @param string|array|null $select
-     */
-    public function setSelectString($select = null, string $table = null): void
+    public function setSelectString(string|array|null $select = null, string $table = null): void
     {
         if ($select) {
             if (is_array($select)) {
@@ -257,7 +245,7 @@ class mysqlTable
     /**
      * @return bool|int Anzahl der Datensätze. Im Fehlerfall false
      */
-    public function select(bool $loadRecord = true, string $select = null, bool $union = false)
+    public function select(bool $loadRecord = true, string $select = null, bool $union = false): bool|int
     {
         $this->sql = $this->getSelect($select, $union);
 
@@ -286,7 +274,7 @@ class mysqlTable
     /**
      * @return bool|int Anzahl der Datensätze. Im Fehlerfall false
      */
-    public function selectPrepared(bool $loadRecord = true, string $select = null, bool $union = false)
+    public function selectPrepared(bool $loadRecord = true, string $select = null, bool $union = false): bool|int
     {
         $this->sql = $this->getSelect($select, $union);
 
@@ -319,9 +307,8 @@ class mysqlTable
      *
      * @param bool $loadRecord Wenn true werden die Datensätze in die Eigenschaft records geladen
      *
-     * @return bool|int
      */
-    public function selectUnion(bool $loadRecord = true)
+    public function selectUnion(bool $loadRecord = true): bool|int
     {
         return $this->selectPrepared($loadRecord, null, true);
     }

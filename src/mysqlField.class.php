@@ -15,11 +15,6 @@ declare(strict_types=1);
 class mysqlField
 {
     /**
-     * @var mysqlDatabase
-     */
-    public $connection;
-
-    /**
      * @var string
      */
     public $name;
@@ -67,9 +62,8 @@ class mysqlField
     /**
      * mysqlField constructor.
      */
-    public function __construct(array $field, mysqlDatabase $connection)
+    public function __construct(array $field, public mysqlDatabase $connection)
     {
-        $this->connection = $connection;
         $this->name = $field[0];
         $this->type = $field[1];
         $this->null = $field[2];

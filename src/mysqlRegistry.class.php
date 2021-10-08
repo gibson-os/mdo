@@ -6,7 +6,7 @@ class mysqlRegistry
     /**
      * @var mysqlRegistry|null
      */
-    private static $instance = null;
+    private static $instance;
 
     /**
      * @var array

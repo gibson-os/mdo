@@ -15,21 +15,6 @@ declare(strict_types=1);
 class mysqlDatabase
 {
     /**
-     * @var string
-     */
-    public $host;
-
-    /**
-     * @var string
-     */
-    public $user;
-
-    /**
-     * @var string
-     */
-    public $pass;
-
-    /**
      * @var mysqli
      */
     public $Mysqli;
@@ -49,11 +34,8 @@ class mysqlDatabase
      */
     private $databaseName;
 
-    public function __construct(string $host, string $user, string $pass)
+    public function __construct(public string $host, public string $user, public string $pass)
     {
-        $this->host = $host;
-        $this->user = $user;
-        $this->pass = $pass;
     }
 
     public function openDB(string $database = null): bool
