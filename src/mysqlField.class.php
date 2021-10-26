@@ -22,13 +22,13 @@ class mysqlField
 
     public string $key;
 
-    public string|int|float|null $default = null;
+    public string|int|float|null $default;
 
     public string $extra;
 
     public string|int|float|null $value = null;
 
-    public float|int|string $length;
+    public float|int|string $length = 0;
 
     public string $valueType = '';
 
@@ -83,7 +83,7 @@ class mysqlField
                 (preg_match('/(float|double|decimal)/i', $this->type) && preg_match('/^-?\d+\.?\d*$/', $value)) ||  // Gleitzahlenfeld
                 (preg_match('/enum/i', $this->type) && preg_match('/' . $value . '/', $this->type)) ||                    // Auswahl
                  preg_match('/(char|text|blob|time|date|year|binary)/i', $this->type)) &&                               // Alles andere
-                (strlen($value) <= $this->length || $this->length == 0))                      // Länge des Feldes
+                (strlen($value) <= $this->length || $this->length === 0))                      // Länge des Feldes
             ) {
                 $this->value = $value;
                 $this->valueType = $type;
