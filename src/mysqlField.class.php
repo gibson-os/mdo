@@ -28,7 +28,7 @@ class mysqlField
 
     public string|int|float|null $value = null;
 
-    public float|int $length;
+    public float|int|string $length;
 
     public string $valueType = '';
 
@@ -133,7 +133,7 @@ class mysqlField
         return $this->default;
     }
 
-    public function getLength(): float
+    public function getLength(): float|int|string
     {
         return $this->length;
     }
