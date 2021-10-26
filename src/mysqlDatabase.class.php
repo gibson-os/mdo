@@ -18,7 +18,7 @@ class mysqlDatabase
 
     public string $sql;
 
-    public mysqli_result $result;
+    public mysqli_result|null $result;
 
     private string $databaseName;
 
@@ -72,6 +72,8 @@ class mysqlDatabase
             return false;
         }
 
+        $this->result = null;
+
         if ($result instanceof mysqli_result) {
             $this->result = $result;
         }
@@ -112,11 +114,7 @@ class mysqlDatabase
 
         $result = $statement->get_result();
 
-        if (!$result instanceof mysqli_result) {
-            return false;
-        }
-
-        $this->result = $result;
+        $this->result = $result === false ? null : $result;
 
         return true;
     }
@@ -126,7 +124,7 @@ class mysqlDatabase
      */
     public function fetchArray(): array
     {
-        return (array) $this->result->fetch_array();
+        return (array) $this->result?->fetch_array();
     }
 
     /**
@@ -134,7 +132,7 @@ class mysqlDatabase
      */
     public function fetchRow(): array
     {
-        return (array) $this->result->fetch_row();
+        return (array) $this->result?->fetch_row();
     }
 
     /**
@@ -142,12 +140,12 @@ class mysqlDatabase
      */
     public function fetchAssoc(): array
     {
-        return (array) $this->result->fetch_assoc();
+        return (array) $this->result?->fetch_assoc();
     }
 
     public function fetchObject(): ?stdClass
     {
-        $object = $this->result->fetch_object();
+        $object = $this->result?->fetch_object();
 
         if (!$object instanceof stdClass) {
             return null;
