@@ -16,21 +16,21 @@ class mysqlTable
 
     public string $unionFunc = 'ALL';
 
-    public string $sql;
+    public string $sql = '';
 
-    public string $where;
+    public string $where = '';
 
-    public string $orderBy;
+    public string $orderBy = '';
 
-    public string $limit;
+    public string $limit = '';
 
-    public string $selectFunc;
+    public string $selectFunc = '';
 
-    public string $groupBy;
+    public string $groupBy = '';
 
-    public string $having;
+    public string $having = '';
 
-    public string $database;
+    public string $database = '';
 
     public array $records = [];
 
