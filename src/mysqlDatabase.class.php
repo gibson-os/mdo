@@ -14,25 +14,13 @@ declare(strict_types=1);
  */
 class mysqlDatabase
 {
-    /**
-     * @var mysqli
-     */
-    public $Mysqli;
+    public mysqli $Mysqli;
 
-    /**
-     * @var string
-     */
-    public $sql;
+    public string $sql;
 
-    /**
-     * @var mysqli_result
-     */
-    public $result;
+    public mysqli_result $result;
 
-    /**
-     * @var string
-     */
-    private $databaseName;
+    private string $databaseName;
 
     public function __construct(public string $host, public string $user, public string $pass)
     {
