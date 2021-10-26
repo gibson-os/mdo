@@ -128,7 +128,7 @@ class mysqlDatabase
     }
 
     /**
-     * @return string[]
+     * @return array<array-key, string|int|float>
      */
     public function fetchArray(): array
     {
@@ -136,7 +136,7 @@ class mysqlDatabase
     }
 
     /**
-     * @return string[]
+     * @return array<array-key, string|int|float>
      */
     public function fetchRow(): array
     {
@@ -144,7 +144,7 @@ class mysqlDatabase
     }
 
     /**
-     * @return string[]
+     * @return array<string, string|int|float>
      */
     public function fetchAssoc(): array
     {
@@ -162,7 +162,7 @@ class mysqlDatabase
         return $object;
     }
 
-    public function fetchResult(int $field = 0): ?string
+    public function fetchResult(int $field = 0): string|int|float|null
     {
         if ($row = $this->fetchRow()) {
             return $row[$field];
@@ -182,6 +182,9 @@ class mysqlDatabase
         return $rows;
     }
 
+    /**
+     * @return array<array-key, array<array-key, string|int|float>>
+     */
     public function fetchRowList(): array
     {
         $rows = [];
@@ -193,6 +196,9 @@ class mysqlDatabase
         return $rows;
     }
 
+    /**
+     * @return array<array-key, array<string, string|int|float>>
+     */
     public function fetchAssocList(): array
     {
         $rows = [];
@@ -204,6 +210,9 @@ class mysqlDatabase
         return $rows;
     }
 
+    /**
+     * @return array<array-key, object>
+     */
     public function fetchObjectList(): array
     {
         $rows = [];
@@ -215,6 +224,9 @@ class mysqlDatabase
         return $rows;
     }
 
+    /**
+     * @return array<array-key, string|int|float|null>
+     */
     public function fetchResultList(int $field = 0): array
     {
         $rows = [];
@@ -226,11 +238,17 @@ class mysqlDatabase
         return $rows;
     }
 
+    /**
+     * @deprecated
+     */
     public function escapeWithoutQuotes(string $value): string
     {
         return $this->Mysqli->real_escape_string($value);
     }
 
+    /**
+     * @deprecated
+     */
     public function escape(string $value): string
     {
         $value = $this->escapeWithoutQuotes($value);
@@ -238,6 +256,9 @@ class mysqlDatabase
         return "'" . $value . "'";
     }
 
+    /**
+     * @deprecated
+     */
     public function implode(array $pieces, string $glue = ','): string
     {
         $data = '';

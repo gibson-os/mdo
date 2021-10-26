@@ -3,15 +3,9 @@ declare(strict_types=1);
 
 class mysqlRegistry
 {
-    /**
-     * @var mysqlRegistry|null
-     */
-    private static $instance;
+    private static ?mysqlRegistry $instance = null;
 
-    /**
-     * @var array
-     */
-    private $registry = [];
+    private array $registry = [];
 
     private function __construct()
     {
@@ -51,10 +45,7 @@ class mysqlRegistry
         $_SESSION[$name] = $this->registry;
     }
 
-    /**
-     * @return bool|mixed
-     */
-    public function get(string $key)
+    public function get(string $key): mixed
     {
         if (array_key_exists($key, $this->registry)) {
             return $this->registry[$key];
@@ -63,10 +54,7 @@ class mysqlRegistry
         return false;
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function set(string $key, $value)
+    public function set(string $key, mixed $value)
     {
         $this->registry[$key] = $value;
     }

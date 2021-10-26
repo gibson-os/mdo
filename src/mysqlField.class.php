@@ -14,54 +14,24 @@ declare(strict_types=1);
  */
 class mysqlField
 {
-    /**
-     * @var string
-     */
-    public $name;
+    public string $name;
 
-    /**
-     * @var string
-     */
-    public $type;
+    public string $type;
 
-    /**
-     * @var string
-     */
-    public $null;
+    public string $null;
 
-    /**
-     * @var string
-     */
-    public $key;
+    public string $key;
 
-    /**
-     * @var string
-     */
-    public $default;
+    public string|int|float|null $default = null;
 
-    /**
-     * @var string
-     */
-    public $extra;
+    public string $extra;
 
-    /**
-     * @var string|int
-     */
-    public $value;
+    public string|int|float|null $value = null;
 
-    /**
-     * @var float
-     */
-    public $length;
+    public float|int $length;
 
-    /**
-     * @var string
-     */
-    public $valueType = '';
+    public string $valueType = '';
 
-    /**
-     * mysqlField constructor.
-     */
     public function __construct(array $field, public mysqlDatabase $connection)
     {
         $this->name = $field[0];
@@ -102,10 +72,7 @@ class mysqlField
         }
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function setValue($value, string $type = ''): bool
+    public function setValue(string|int|float|null $value, string $type = ''): bool
     {
         $value = (string) $value;
 
@@ -130,6 +97,9 @@ class mysqlField
         return true;
     }
 
+    /**
+     * @deprecated
+     */
     public function getSQLValue(): string
     {
         if ($this->valueType == 'FUNC') {
@@ -139,10 +109,7 @@ class mysqlField
         return $this->connection->escape((string) $this->value);
     }
 
-    /**
-     * @return string|int|null
-     */
-    public function getValue()
+    public function getValue(): string|int|float|null
     {
         if ($this->value === 'NULL') {
             return null;
@@ -161,7 +128,7 @@ class mysqlField
         return $this->type;
     }
 
-    public function getDefaultValue(): string
+    public function getDefaultValue(): string|int|float|null
     {
         return $this->default;
     }

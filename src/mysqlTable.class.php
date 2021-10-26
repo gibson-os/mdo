@@ -4,99 +4,42 @@ declare(strict_types=1);
 
 class mysqlTable
 {
-    /**
-     * @var mysqlDatabase
-     */
-    public $connection;
+    public mysqlDatabase $connection;
 
-    /**
-     * @var array
-     */
-    public $fields = [];
+    public array $fields = [];
 
-    /**
-     * @var string
-     */
-    public $selectString = '*';
+    public string $selectString = '*';
 
-    /**
-     * @var string
-     */
-    public $joins = '';
+    public string $joins = '';
 
-    /**
-     * @var array
-     */
-    public $unions = [];
+    public array $unions = [];
 
-    /**
-     * @var string
-     */
-    public $unionFunc = 'ALL';
+    public string $unionFunc = 'ALL';
 
-    /**
-     * @var string
-     */
-    public $sql;
+    public string $sql;
 
-    /**
-     * @var string
-     */
-    public $where;
+    public string $where;
 
-    /**
-     * @var string
-     */
-    public $orderBy;
+    public string $orderBy;
 
-    /**
-     * @var string
-     */
-    public $limit;
+    public string $limit;
 
-    /**
-     * @var string
-     */
-    public $selectFunc;
+    public string $selectFunc;
 
-    /**
-     * @var string
-     */
-    public $groupBy;
+    public string $groupBy;
 
-    /**
-     * @var string
-     */
-    public $having;
+    public string $having;
 
-    /**
-     * @var string
-     */
-    public $database;
+    public string $database;
 
-    /**
-     * @var array
-     */
-    public $records = [];
+    public array $records = [];
 
-    /**
-     * @var int
-     */
-    public $countRecords = 0;
+    public int $countRecords = 0;
 
-    /**
-     * @var int
-     */
-    public $selectedRecord = 0;
+    public int $selectedRecord = 0;
 
-    /**
-     * @var array
-     */
-    private $whereParameters = [];
+    private array $whereParameters = [];
 
-    /**
-     * mysqlTable constructor.
-     */
     public function __construct(mysqlDatabase $connection, public string $table)
     {
         $this->database = $connection->getDatabaseName();
@@ -118,9 +61,9 @@ class mysqlTable
             $fields = [];
 
             while ($field = $this->connection->fetchRow()) {
-                if (preg_match('/\(\d*\)/', $field[1], $length, PREG_OFFSET_CAPTURE)) {
+                if (preg_match('/\(\d*\)/', (string) $field[1], $length, PREG_OFFSET_CAPTURE)) {
                     $field[] = substr($length[0][0], 1, strlen($length[0][0]) - 2);
-                    $field[1] = preg_replace('/\(\d*\)/', '', $field[1]);
+                    $field[1] = preg_replace('/\(\d*\)/', '', (string) $field[1]);
                 }
 
                 $this->fields[] = $field[0];
@@ -149,10 +92,7 @@ class mysqlTable
         $this->clearJoin();
     }
 
-    /**
-     * @param mixed|null $record
-     */
-    public function load($record = null): bool
+    public function load(array|object $record = null): bool
     {
         if (is_object($record)) {
             foreach ($this->fields as $field) {
@@ -197,7 +137,7 @@ class mysqlTable
         }
     }
 
-    public function setSelectString(string|array|null $select = null, string $table = null): void
+    public function setSelectString(string|array $select = null, string $table = null): void
     {
         if ($select) {
             if (is_array($select)) {
@@ -242,9 +182,6 @@ class mysqlTable
         return trim('SELECT ' . $this->selectFunc . $select . ' FROM `' . $this->database . '`.`' . $this->table . '`' . $this->joins . ' ' . $this->where . $this->groupBy . $this->having . $this->orderBy . $this->limit) . ';';
     }
 
-    /**
-     * @return bool|int Anzahl der Datensätze. Im Fehlerfall false
-     */
     public function select(bool $loadRecord = true, string $select = null, bool $union = false): bool|int
     {
         $this->sql = $this->getSelect($select, $union);
@@ -271,9 +208,6 @@ class mysqlTable
         return false;
     }
 
-    /**
-     * @return bool|int Anzahl der Datensätze. Im Fehlerfall false
-     */
     public function selectPrepared(bool $loadRecord = true, string $select = null, bool $union = false): bool|int
     {
         $this->sql = $this->getSelect($select, $union);
@@ -300,21 +234,13 @@ class mysqlTable
         return false;
     }
 
-    /**
-     * Führt SQL Query aus.
-     *
-     * Führt ein SQL Query mit Union aus mit dem Ziel Datensätze zu erhalten.
-     *
-     * @param bool $loadRecord Wenn true werden die Datensätze in die Eigenschaft records geladen
-     *
-     */
     public function selectUnion(bool $loadRecord = true): bool|int
     {
         return $this->selectPrepared($loadRecord, null, true);
     }
 
     /**
-     * @return string[]|null
+     * @return array<array-key, string|int|float>|null
      */
     public function selectAggregate(string $function): ?array
     {
@@ -325,6 +251,9 @@ class mysqlTable
         return $this->connection->fetchRow();
     }
 
+    /**
+     * @return array{query: string, parameters: array<array-key, int|float|string|null>}
+     */
     public function getSave(): array
     {
         $sql = 'INSERT INTO `' . $this->database . '`.`' . $this->table . '` SET ';
