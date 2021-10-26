@@ -110,7 +110,13 @@ class mysqlDatabase
             return false;
         }
 
-        $this->result = $statement->get_result();
+        $result = $statement->get_result();
+
+        if (!$result instanceof mysqli_result) {
+            return false;
+        }
+
+        $this->result = $result;
 
         return true;
     }
