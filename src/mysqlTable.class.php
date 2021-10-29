@@ -580,4 +580,9 @@ class mysqlTable
 
         return $this;
     }
+
+    public function getParametersString(array $parameters, $separator = ', ', $value = '?'): string
+    {
+        return implode($separator, array_fill(0, count($parameters), $value));
+    }
 }
