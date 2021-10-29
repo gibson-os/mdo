@@ -204,7 +204,7 @@ class mysqlDatabase
     }
 
     /**
-     * @return array<array-key, object>
+     * @return array<array-key, stdClass>
      */
     public function fetchObjectList(): array
     {
