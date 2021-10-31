@@ -567,6 +567,11 @@ class mysqlTable
         return $this->table;
     }
 
+    public function getWhereParameters(): array
+    {
+        return $this->whereParameters;
+    }
+
     public function setWhereParameters(array $whereParameters): mysqlTable
     {
         $this->whereParameters = $whereParameters;
