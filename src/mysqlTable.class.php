@@ -241,11 +241,24 @@ class mysqlTable
     }
 
     /**
+     * @deprecated
      * @return array<array-key, string|int|float>|null
      */
     public function selectAggregate(string $function): ?array
     {
         if (!$this->select(false, $function)) {
+            return null;
+        }
+
+        return $this->connection->fetchRow();
+    }
+
+    /**
+     * @return array<array-key, string|int|float>|null
+     */
+    public function selectAggregatePrepared(string $function): ?array
+    {
+        if (!$this->selectPrepared(false, $function)) {
             return null;
         }
 
@@ -566,6 +579,11 @@ class mysqlTable
     public function getTableName(): string
     {
         return $this->table;
+    }
+
+    public function getWhereParameters(): array
+    {
+        return $this->whereParameters;
     }
 
     public function setWhereParameters(array $whereParameters): mysqlTable
