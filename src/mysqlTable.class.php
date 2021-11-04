@@ -86,6 +86,7 @@ class mysqlTable
     {
         $this->load();
         $this->setWhere();
+        $this->setWhereParameters([]);
         $this->setGroupBy();
         $this->setOrderBy();
         $this->setLimit();
