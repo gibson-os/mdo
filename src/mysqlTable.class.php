@@ -84,6 +84,8 @@ class mysqlTable
 
     public function reset()
     {
+        $this->unions = [];
+        $this->unionFunc = 'ALL';
         $this->load();
         $this->setWhere();
         $this->setWhereParameters([]);
