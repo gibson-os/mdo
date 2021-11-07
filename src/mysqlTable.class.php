@@ -167,25 +167,22 @@ class mysqlTable
         return $this->connection->sendQuery($this->sql);
     }
 
-    public function getSelect(string $select = null, bool $union = false): string
+    public function getSelect(string $select = null): string
     {
         if (!$select) {
             $select = $this->selectString;
         }
 
-        if (
-            $union &&
-            count($this->unions) > 1
-        ) {
+        if (count($this->unions) > 1) {
             return '(' . trim(implode(') UNION ' . $this->unionFunc . ' (', $this->unions)) . ') ' . $this->orderBy . $this->limit . ';';
         }
 
         return trim('SELECT ' . $this->selectFunc . $select . ' FROM `' . $this->database . '`.`' . $this->table . '`' . $this->joins . ' ' . $this->where . $this->groupBy . $this->having . $this->orderBy . $this->limit) . ';';
     }
 
-    public function select(bool $loadRecord = true, string $select = null, bool $union = false): bool|int
+    public function select(bool $loadRecord = true, string $select = null): bool|int
     {
-        $this->sql = $this->getSelect($select, $union);
+        $this->sql = $this->getSelect($select);
 
         if ($this->connection->sendQuery($this->sql)) {
             if ($loadRecord) {
@@ -209,9 +206,9 @@ class mysqlTable
         return false;
     }
 
-    public function selectPrepared(bool $loadRecord = true, string $select = null, bool $union = false): bool|int
+    public function selectPrepared(bool $loadRecord = true, string $select = null): bool|int
     {
-        $this->sql = $this->getSelect($select, $union);
+        $this->sql = $this->getSelect($select);
 
         if ($this->connection->execute($this->sql, $this->whereParameters)) {
             if ($loadRecord) {
@@ -235,9 +232,12 @@ class mysqlTable
         return false;
     }
 
+    /**
+     * @deprecated Use selectPrepared
+     */
     public function selectUnion(bool $loadRecord = true): bool|int
     {
-        return $this->selectPrepared($loadRecord, null, true);
+        return $this->selectPrepared($loadRecord);
     }
 
     /**
