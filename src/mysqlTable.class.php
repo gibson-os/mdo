@@ -57,7 +57,7 @@ class mysqlTable
                 }
             }
         } else {
-            $this->connection->sendQuery('SHOW FIELDS FROM `' . $this->database . '`.`' . $table . '`;');
+            $this->connection->sendQuery('SHOW FIELDS FROM `' . $this->database . '`.`' . $table . '`');
             $fields = [];
 
             while ($field = $this->connection->fetchRow()) {
@@ -175,11 +175,17 @@ class mysqlTable
             $select = $this->selectString;
         }
 
-        if (count($this->unions) > 1) {
-            return '(' . trim(implode(') UNION ' . $this->unionFunc . ' (', $this->unions)) . ') ' . $this->orderBy . $this->limit . ';';
+        if (count($this->unions) > 0) {
+            $unions = $this->unions;
+            array_unshift(
+                $unions,
+                trim('SELECT ' . $this->selectFunc . $select . ' FROM `' . $this->database . '`.`' . $this->table . '`' . $this->joins . ' ' . $this->where . $this->groupBy . $this->having)
+            );
+
+            return '(' . trim(implode(') UNION ' . $this->unionFunc . ' (', $unions)) . ') ' . $this->orderBy . $this->limit;
         }
 
-        return trim('SELECT ' . $this->selectFunc . $select . ' FROM `' . $this->database . '`.`' . $this->table . '`' . $this->joins . ' ' . $this->where . $this->groupBy . $this->having . $this->orderBy . $this->limit) . ';';
+        return trim('SELECT ' . $this->selectFunc . $select . ' FROM `' . $this->database . '`.`' . $this->table . '`' . $this->joins . ' ' . $this->where . $this->groupBy . $this->having . $this->orderBy . $this->limit);
     }
 
     public function select(bool $loadRecord = true, string $select = null): bool|int
@@ -350,7 +356,7 @@ class mysqlTable
     public function getDelete(): string
     {
         if (!empty($this->where) && strlen($this->where)) {
-            $sql = 'DELETE FROM `' . $this->database . '`.`' . $this->table . '` ' . $this->where . ';';
+            $sql = 'DELETE FROM `' . $this->database . '`.`' . $this->table . '` ' . $this->where;
         } else {
             $sql = 'DELETE FROM `' . $this->database . '`.`' . $this->table . '` WHERE ';
 
@@ -362,7 +368,7 @@ class mysqlTable
                 }
             }
 
-            $sql = substr($sql, 0, strlen($sql) - 5) . ';';
+            $sql = substr($sql, 0, strlen($sql) - 5);
             // Datensatz aus Array löschen!
         }
 
@@ -379,7 +385,7 @@ class mysqlTable
     public function getDeletePrepared(): string
     {
         if (!empty($this->where) && strlen($this->where)) {
-            $sql = 'DELETE FROM `' . $this->database . '`.`' . $this->table . '` ' . $this->where . ';';
+            $sql = 'DELETE FROM `' . $this->database . '`.`' . $this->table . '` ' . $this->where;
         } else {
             $sql = 'DELETE FROM `' . $this->database . '`.`' . $this->table . '` WHERE ';
 
@@ -392,7 +398,7 @@ class mysqlTable
                 }
             }
 
-            $sql = substr($sql, 0, strlen($sql) - 5) . ';';
+            $sql = substr($sql, 0, strlen($sql) - 5);
             // Datensatz aus Array löschen!
         }
 
