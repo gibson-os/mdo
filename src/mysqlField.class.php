@@ -76,18 +76,22 @@ class mysqlField
     {
         $value = (string) $value;
 
-        if (
-            $type == 'FUNC' ||
-            (((preg_match('/int/i', $this->type) && preg_match('/^-?\d+$/', $value)) ||                          // Ganzzahlenfeld
-            (preg_match('/(float|double|decimal)/i', $this->type) && preg_match('/^-?\d+\.?\d*$/', $value)) ||  // Gleitzahlenfeld
-            (preg_match('/enum/i', $this->type) && preg_match('/' . $value . '/', $this->type)) ||                    // Auswahl
-             preg_match('/(char|text|blob|time|date|year|binary)/i', $this->type)) &&                               // Alles andere
-            (strlen($value) <= $this->length || $this->length === 0))                      // Länge des Feldes
-        ) {
-            $this->value = $value;
-            $this->valueType = $type;
+        if (strlen($value)) {
+            if (
+                $type == 'FUNC' ||
+                (((preg_match('/int/i', $this->type) && preg_match('/^-?\d+$/', $value)) ||                          // Ganzzahlenfeld
+                (preg_match('/(float|double|decimal)/i', $this->type) && preg_match('/^-?\d+\.?\d*$/', $value)) ||  // Gleitzahlenfeld
+                (preg_match('/enum/i', $this->type) && preg_match('/' . $value . '/', $this->type)) ||                    // Auswahl
+                 preg_match('/(char|text|blob|time|date|year|binary)/i', $this->type)) &&                               // Alles andere
+                (strlen($value) <= $this->length || $this->length === 0))                      // Länge des Feldes
+            ) {
+                $this->value = $value;
+                $this->valueType = $type;
+            } else {
+                return false;
+            }
         } else {
-            return false;
+            $this->setDefaultValue();
         }
 
         return true;
