@@ -166,7 +166,7 @@ class mysqlTable
     {
         $this->sql = 'UPDATE `' . $this->database . '`.`' . $this->table . '` SET ' . $set . ' ' . $this->where;
 
-        return $this->connection->sendQuery($this->sql);
+        return $this->connection->execute($this->sql, $this->whereParameters);
     }
 
     public function getSelect(string $select = null): string
