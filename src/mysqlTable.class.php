@@ -495,7 +495,7 @@ class mysqlTable
         if ($query) {
             $query = preg_replace('/;/', '', $query);
         } else {
-            $query = mb_substr($this->getSelect($select), 0, -1);
+            $query = $this->getSelect($select);
         }
 
         $this->unions[] = $query;
