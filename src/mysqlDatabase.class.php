@@ -93,19 +93,37 @@ class mysqlDatabase
 
         if (count($parameters)) {
             $parameterTypes = '';
+            $longData = [];
 
-            foreach ($parameters as $parameter) {
+            foreach ($parameters as $index => $parameter) {
                 if (is_int($parameter)) {
                     $parameterTypes .= 'i';
                 } elseif (is_float($parameter)) {
                     $parameterTypes .= 'd';
                 } else {
+                    $length = strlen($parameter);
+
+                    for ($i = 0; $i < $length; $i++) {
+                        if (ord($parameter[$i]) > 127) {
+                            $parameterTypes .= 'b';
+                            $longData[$index] = $parameter;
+
+                            continue 2;
+                        }
+                    }
+
                     $parameterTypes .= 's';
                 }
             }
 
             if (!$statement->bind_param($parameterTypes, ...$parameters)) {
                 return false;
+            }
+
+            foreach ($longData as $index => $data) {
+                if (!$statement->send_long_data($index, $data)) {
+                    return false;
+                }
             }
         }
 
