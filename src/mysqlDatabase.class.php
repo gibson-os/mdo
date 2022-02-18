@@ -22,6 +22,8 @@ class mysqlDatabase
 
     private string $databaseName;
 
+    private bool $transaction = false;
+
     public function __construct(public string $host, public string $user, public string $pass)
     {
     }
@@ -302,16 +304,24 @@ class mysqlDatabase
     public function startTransaction(): void
     {
         $this->sendQuery('START TRANSACTION');
+        $this->transaction = true;
     }
 
     public function commit(): void
     {
         $this->sendQuery('COMMIT');
+        $this->transaction = false;
     }
 
     public function rollback(): void
     {
         $this->sendQuery('ROLLBACK');
+        $this->transaction = false;
+    }
+
+    public function isTransaction(): bool
+    {
+        return $this->transaction;
     }
 
     public function getDatabaseName(): string
