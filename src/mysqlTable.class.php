@@ -356,7 +356,7 @@ class mysqlTable
     public function getDelete(): string
     {
         if (!empty($this->where) && strlen($this->where)) {
-            $sql = 'DELETE FROM `' . $this->database . '`.`' . $this->table . '` ' . $this->where;
+            $sql = 'DELETE `' . $this->table . '` FROM `' . $this->database . '`.`' . $this->table . '`' . $this->joins . ' ' . $this->where;
         } else {
             $sql = 'DELETE FROM `' . $this->database . '`.`' . $this->table . '` WHERE ';
 
@@ -385,7 +385,7 @@ class mysqlTable
     public function getDeletePrepared(): string
     {
         if (!empty($this->where) && strlen($this->where)) {
-            $sql = 'DELETE FROM `' . $this->database . '`.`' . $this->table . '` ' . $this->where;
+            $sql = 'DELETE `' . $this->table . '` FROM `' . $this->database . '`.`' . $this->table . '`' . $this->joins . ' ' . $this->where;
         } else {
             $sql = 'DELETE FROM `' . $this->database . '`.`' . $this->table . '` WHERE ';
 
