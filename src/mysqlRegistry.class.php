@@ -31,7 +31,7 @@ class mysqlRegistry
 
     public function loadFromSession(string $name = 'REGISTRY'): bool
     {
-        if (array_key_exists($name, $_SESSION)) {
+        if (isset($_SESSION[$name])) {
             $this->registry = $_SESSION[$name];
 
             return true;

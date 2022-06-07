@@ -250,7 +250,7 @@ class mysqlTable
 
     /**
      * @deprecated
-     * @return array<array-key, string|int|float>|null
+     * @return array<array-key, string|int|float|null|false>|null
      */
     public function selectAggregate(string $function): ?array
     {
@@ -262,7 +262,7 @@ class mysqlTable
     }
 
     /**
-     * @return array<array-key, string|int|float>|null
+     * @return array<array-key, string|int|float|false|null>|null
      */
     public function selectAggregatePrepared(string $function): ?array
     {

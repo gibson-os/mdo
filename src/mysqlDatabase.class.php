@@ -141,7 +141,7 @@ class mysqlDatabase
     }
 
     /**
-     * @return array<array-key, string|int|float>
+     * @return array<array-key, false|float|int|null|string>
      */
     public function fetchArray(): array
     {
@@ -149,7 +149,7 @@ class mysqlDatabase
     }
 
     /**
-     * @return array<array-key, string|int|float>
+     * @return array<array-key, false|float|int|null|string>
      */
     public function fetchRow(): array
     {
@@ -157,7 +157,7 @@ class mysqlDatabase
     }
 
     /**
-     * @return array<string, string|int|float>
+     * @return array<0|string, false|float|int|null|string>
      */
     public function fetchAssoc(): array
     {
@@ -175,7 +175,7 @@ class mysqlDatabase
         return $object;
     }
 
-    public function fetchResult(int $field = 0): string|int|float|null
+    public function fetchResult(int $field = 0): string|int|float|null|false
     {
         if ($row = $this->fetchRow()) {
             return $row[$field];
@@ -196,7 +196,7 @@ class mysqlDatabase
     }
 
     /**
-     * @return array<array-key, array<array-key, string|int|float>>
+     * @return array<array-key, array<array-key, string|int|float|false|null>>
      */
     public function fetchRowList(): array
     {
@@ -210,7 +210,7 @@ class mysqlDatabase
     }
 
     /**
-     * @return array<array-key, array<string, string|int|float>>
+     * @return array<array-key, array<0|string, string|int|float|false|null>>
      */
     public function fetchAssocList(): array
     {
