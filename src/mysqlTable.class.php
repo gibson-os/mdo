@@ -559,7 +559,7 @@ class mysqlTable
     }
 
     /**
-     * @return array<string, string>
+     * @return array<array-key, array<string, string>>
      */
     public function getRecords(): array
     {
@@ -567,7 +567,7 @@ class mysqlTable
     }
 
     /**
-     * @return string[]
+     * @return array<string, string>
      */
     public function getSelectedRecord(): array
     {
