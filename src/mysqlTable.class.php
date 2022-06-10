@@ -559,7 +559,7 @@ class mysqlTable
     }
 
     /**
-     * @return string[]
+     * @return array<string, string>
      */
     public function getRecords(): array
     {
