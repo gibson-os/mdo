@@ -102,6 +102,9 @@ class mysqlDatabase
                     $parameterTypes .= 'i';
                 } elseif (is_float($parameter)) {
                     $parameterTypes .= 'd';
+                } elseif (is_object($parameter) && enum_exists($parameter::class)) {
+                    $parameterTypes .= 's';
+                    $parameters[$index] = $parameter->name;
                 } else {
                     $length = strlen($parameter);
 
