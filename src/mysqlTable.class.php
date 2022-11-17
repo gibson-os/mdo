@@ -601,9 +601,13 @@ class mysqlTable
         return $this;
     }
 
-    public function addWhereParameter($value): mysqlTable
+    public function addWhereParameter($value, string $key = null): mysqlTable
     {
-        $this->whereParameters[] = $value;
+        if ($key === null) {
+            $this->whereParameters[] = $value;
+        } else {
+            $this->whereParameters[$key] = $value;
+        }
 
         return $this;
     }
