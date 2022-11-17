@@ -97,6 +97,20 @@ class mysqlDatabase
             $parameterTypes = '';
             $longData = [];
 
+            preg_match_all('/:\w+/', $query, $namedParameters);
+            $namedParameters = $namedParameters[0];
+
+            if (count($namedParameters)) {
+                preg_replace('/:\w+/', '?', $query);
+                $newParameters = [];
+
+                foreach ($namedParameters as $namedParameter) {
+                    $newParameters[] = $parameters[$namedParameter];
+                }
+
+                $parameters = $newParameters;
+            }
+
             foreach ($parameters as $index => $parameter) {
                 if (is_int($parameter)) {
                     $parameterTypes .= 'i';
