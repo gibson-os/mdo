@@ -612,8 +612,19 @@ class mysqlTable
         return $this;
     }
 
-    public function getParametersString(array $parameters, $separator = ', ', $value = '?'): string
+    public function getParametersString(array $parameters, string $separator = ', ', string $value = '?'): string
     {
-        return implode($separator, array_fill(0, count($parameters), $value));
+        if ($value === '?') {
+            return implode($separator, array_fill(0, count($parameters), $value));
+        }
+
+        $namedParameters = [];
+        $i = 0;
+
+        foreach ($parameters as $parameter) {
+            $namedParameters[] = ':' . $value . $i++;
+        }
+
+        return implode($separator, $namedParameters);
     }
 }
