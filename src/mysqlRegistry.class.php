@@ -58,4 +58,9 @@ class mysqlRegistry
     {
         $this->registry[$key] = $value;
     }
+
+    public function reset(): void
+    {
+        $this->registry = [];
+    }
 }
