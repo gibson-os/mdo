@@ -250,9 +250,8 @@ class mysqlTable
 
     /**
      * @deprecated
-     * @return array<array-key, string|int|float|null|false>|null
      */
-    public function selectAggregate(string $function): ?array
+    public function selectAggregate(string $function): array|null|false
     {
         if (!$this->select(false, $function)) {
             return null;
@@ -261,10 +260,7 @@ class mysqlTable
         return $this->connection->fetchRow();
     }
 
-    /**
-     * @return array<array-key, string|int|float|false|null>|null
-     */
-    public function selectAggregatePrepared(string $function): ?array
+    public function selectAggregatePrepared(string $function): array|null|false
     {
         if (!$this->selectPrepared(false, $function)) {
             return null;

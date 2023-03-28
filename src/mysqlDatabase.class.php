@@ -157,28 +157,19 @@ class mysqlDatabase
         return true;
     }
 
-    /**
-     * @return array<array-key, false|float|int|null|string>
-     */
-    public function fetchArray(): array
+    public function fetchArray(): array|null|false
     {
-        return (array) $this->result?->fetch_array();
+        return $this->result?->fetch_array();
     }
 
-    /**
-     * @return array<array-key, false|float|int|null|string>
-     */
-    public function fetchRow(): array
+    public function fetchRow(): array|null|false
     {
-        return (array) $this->result?->fetch_row();
+        return $this->result?->fetch_row();
     }
 
-    /**
-     * @return array<0|string, false|float|int|null|string>
-     */
-    public function fetchAssoc(): array
+    public function fetchAssoc(): array|null|false
     {
-        return (array) $this->result?->fetch_assoc();
+        return $this->result?->fetch_assoc();
     }
 
     public function fetchObject(): ?stdClass
