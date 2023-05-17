@@ -335,14 +335,15 @@ class mysqlTable
             $fieldObject = $this->{$field};
             $value = $fieldObject->getValue() ?? $fieldObject->getDefaultValue();
 
-            if ($value === 'current_timestamp()') {
+            if (
+                ($fieldObject->isAutoIncrement() && !$value) ||
+                $value === 'current_timestamp()'
+            ) {
                 continue;
             }
 
             if ($value === null) {
-                if (!$fieldObject->isAutoIncrement()) {
-                    $wheres[] = '`' . $field . '` IS NULL';
-                }
+                $wheres[] = '`' . $field . '` IS NULL';
 
                 continue;
             }
