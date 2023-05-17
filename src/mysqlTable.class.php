@@ -328,19 +328,33 @@ class mysqlTable
 
     public function getReplacedRecord(): bool
     {
-        $where = '';
+        $wheres = [];
 
         foreach ($this->fields as $field) {
-            if ($this->{$field}->getValue()) {
-                $where .= '`' . $field . '`=' . $this->{$field}->getSQLValue() . ' && ';
+            /** @var mysqlField $fieldObject */
+            $fieldObject = $this->{$field};
+            $value = $fieldObject->getValue() ?? $fieldObject->getDefaultValue();
+
+            if ($value === 'current_timestamp()') {
+                continue;
             }
+
+            if ($value === null) {
+                if (!$fieldObject->isAutoIncrement()) {
+                    $wheres[] = '`' . $field . '` IS NULL';
+                }
+
+                continue;
+            }
+
+            $wheres[] = '`' . $field . '`=?';
+            $this->addWhereParameter($value);
         }
 
-        $where = substr($where, 0, strlen($where) - 4);
-
-        $this->setWhere($where);
-        $this->select();
+        $this->setWhere(implode(' AND ', $wheres));
+        $this->selectPrepared();
         $this->setWhere();
+        $this->setWhereParameters([]);
 
         if ($this->countRecords() == 1) {
             return true;
