@@ -1,0 +1,34 @@
+<?php
+declare(strict_types=1);
+
+namespace MDO\Dto;
+
+readonly class Table
+{
+    /**
+     * @param Field[] $fields
+     */
+    public function __construct(
+        private string $tableName,
+        private array $fields,
+    ) {
+    }
+
+    public function getTableName(): string
+    {
+        return $this->tableName;
+    }
+
+    /**
+     * @return Field[]
+     */
+    public function getFields(): array
+    {
+        return $this->fields;
+    }
+
+    public function getField(string $fieldName): Field
+    {
+        return $this->fields[$fieldName];
+    }
+}

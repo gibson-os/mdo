@@ -1,7 +1,7 @@
 {
   "name": "gibson-os/mdo",
   "require": {
-    "php": "^8.1",
+    "php": "^8.2",
     "ext-mysqli": "*",
     "ext-mbstring": "*"
   },
@@ -18,7 +18,10 @@
   "autoload": {
     "classmap": [
       "src"
-    ]
+    ],
+    "psr-4": {
+      "MDO\\": "src/"
+    }
   },
   "scripts": {
     "fix": [
