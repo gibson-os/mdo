@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace MDO\Dto\Query;
 
+use MDO\Dto\Field;
 use MDO\Dto\Table;
 use MDO\Enum\OrderDirection;
 
@@ -29,10 +30,12 @@ class Select implements QueryInterface
      */
     private array $orders = [];
 
-    public function __construct(private readonly Table $table) {
-        foreach ($table->getFields() as $field) {
-            $this->selects[$field->getName()] = sprintf('`%s`', $field->getName());
-        }
+    public function __construct(private readonly Table $table)
+    {
+        $this->selects = array_map(
+            static fn(Field $field): string => sprintf('`%s`', $field->getName()),
+            $this->table->getFields(),
+        );
     }
 
     public function getQuery(): string

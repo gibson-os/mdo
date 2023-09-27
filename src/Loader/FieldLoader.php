@@ -16,6 +16,7 @@ class FieldLoader
 
     /**
      * @throws ClientException
+     * @return array<string, Field>
      */
     public function loadFields(string $tableName): array
     {
@@ -31,8 +32,9 @@ class FieldLoader
                 $type = preg_replace('/\(\d*\)/', '', (string) $field->get('Type'));
             }
 
-            $fields[] = new Field(
-                (string) $field->get('Field'),
+            $fieldName = (string) $field->get('Field');
+            $fields[$fieldName] = new Field(
+                $fieldName,
                 mb_strtolower((string) $field->get('Null')) === 'yes',
                 constant(sprintf('%s::%s', Type::class, $type)),
                 (string) $field->get('Key'),

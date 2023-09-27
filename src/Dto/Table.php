@@ -8,7 +8,7 @@ use MDO\Exception\TableException;
 readonly class Table
 {
     /**
-     * @param Field[] $fields
+     * @param array<string, Field> $fields
      */
     public function __construct(
         private string $tableName,
@@ -22,7 +22,7 @@ readonly class Table
     }
 
     /**
-     * @return Field[]
+     * @return array<string, Field>
      */
     public function getFields(): array
     {
