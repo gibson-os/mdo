@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace MDO\Manager;
 
 use MDO\Dto\Table;
+use MDO\Loader\FieldLoader;
 
 class TableManager
 {
@@ -12,13 +13,13 @@ class TableManager
      */
     private array $tables = [];
 
-    public function __construct()
+    public function __construct(private readonly FieldLoader $fieldLoader)
     {
     }
 
     public function getTable(string $tableName): Table
     {
-        $this->tables[$tableName] ??= new Table($tableName);
+        $this->tables[$tableName] ??= new Table($tableName, $this->fieldLoader->loadFields($tableName));
 
         return $this->tables[$tableName];
     }

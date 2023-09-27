@@ -8,7 +8,6 @@ use MDO\Enum\Type;
 readonly class Field
 {
     public function __construct(
-        private Table $table,
         private string $name,
         private bool $nullable,
         private Type $type,
@@ -17,11 +16,6 @@ readonly class Field
         private string $extra,
         private float|int|string $length = 0,
     ) {
-    }
-
-    public function getTable(): Table
-    {
-        return $this->table;
     }
 
     public function getName(): string

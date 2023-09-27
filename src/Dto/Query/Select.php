@@ -4,18 +4,32 @@ declare(strict_types=1);
 namespace MDO\Dto\Query;
 
 use MDO\Dto\Table;
-use phpDocumentor\Reflection\Type;
+use MDO\Enum\OrderDirection;
 
-class Select
+class Select implements QueryInterface
 {
     use JoinTrait;
     use WhereTrait;
+    use LimitTrait;
 
+    /**
+     * @var string[]
+     */
     private array $selects = [];
 
-    public function __construct(
-        private readonly Table $table,
-    ) {
+    /**
+     * @var string[]
+     */
+    private array $groups = [];
+
+    private ?string $having = null;
+
+    /**
+     * @var array<string, OrderDirection>
+     */
+    private array $orders = [];
+
+    public function __construct(private readonly Table $table) {
         foreach ($table->getFields() as $field) {
             $this->selects[$field->getName()] = sprintf('`%s`', $field->getName());
         }
@@ -23,28 +37,80 @@ class Select
 
     public function getQuery(): string
     {
+        $selectString = $this->getSelectString();
+        $whereString = $this->getWhereString();
+        $groupString = $this->getGroupString();
+        $orderString = $this->getOrderString();
+        $limitString = $this->getLimitString();
+
+        return trim(sprintf(
+            'SELECT %s FROM %s %s%s%s%s%s%s',
+            $selectString,
+            $this->table->getTableName(),
+            trim($this->getJoinsString() . ' '),
+            $whereString === '' ? '' : ' WHERE ' . $whereString,
+            $groupString === '' ? '' : ' GROUP BY ' . $groupString,
+            $this->having === null ? '' : ' HAVING ' . $this->having,
+            $orderString === '' ? '' : ' ORDER BY ' . $orderString,
+            $limitString === '' ? '' : ' LIMIT ' . $limitString,
+        ));
+    }
+
+    public function getSelects(): array
+    {
+        return $this->selects;
+    }
+
+    public function setSelects(array $selects): Select
+    {
+        $this->selects = $selects;
+
+        return $this;
+    }
+
+    public function setSelect(string $select, string $alias): Select
+    {
+        $this->selects[$alias] = $select;
+
+        return $this;
+    }
+
+    public function getOrders(): array
+    {
+        return $this->orders;
+    }
+
+    public function setOrder(string $fieldName, OrderDirection $direction): Select
+    {
+        $this->orders[$fieldName] = $direction;
+
+        return $this;
+    }
+
+    private function getSelectString(): string
+    {
         $selectString = '';
 
         foreach ($this->selects as $alias => $select) {
             $selectString .= sprintf('(%s) `%s`', $select, $alias);
         }
 
-        $whereString = $this->getWhereString();
-
-        return trim(sprintf(
-            'SELECT %s FROM %s %s%s%s%s%s',
-            $selectString,
-            $this->table->getTableName(),
-            trim($this->getJoinsString() . ' '),
-            $whereString === '' ? '' : 'WHERE ' . $whereString,
-            'group by',
-            'order',
-            'limit',
-        ));
+        return $selectString;
     }
 
-    public function __toString(): string
+    private function getGroupString(): string
     {
-        return $this->getQuery();
+        return implode(', ', $this->groups);
+    }
+
+    private function getOrderString(): string
+    {
+        $orders = [];
+
+        foreach ($this->orders as $fieldName => $direction) {
+            $orders[] = sprintf('%s %s', $fieldName, $direction->value);
+        }
+
+        return implode(', ', $orders);
     }
 }

@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace MDO\Dto\Query;
 
-use MDO\Dto\Query;
-
 trait JoinTrait
 {
     /**

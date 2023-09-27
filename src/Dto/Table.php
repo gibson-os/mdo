@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace MDO\Dto;
 
+use MDO\Exception\TableException;
+
 readonly class Table
 {
     /**
@@ -29,6 +31,10 @@ readonly class Table
 
     public function getField(string $fieldName): Field
     {
-        return $this->fields[$fieldName];
+        return $this->fields[$fieldName] ?? throw new TableException(sprintf(
+            'Field %s does not exist in table %s',
+            $fieldName,
+            $this->tableName,
+        ));
     }
 }

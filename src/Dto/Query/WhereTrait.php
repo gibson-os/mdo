@@ -35,8 +35,16 @@ trait WhereTrait
         return $this;
     }
 
-    public function getWhereString(): string
+    protected function getWhereString(): string
     {
-        return '(' . implode(') AND (', $this->wheres) . ')';
+        return sprintf('(%s)', implode(') AND (', $this->wheres));
+    }
+
+    public function getParameters(): array
+    {
+        return array_merge(array_map(
+            static fn (Where $where): array => $where->getParameters(),
+            $this->getWheres()
+        ));
     }
 }
