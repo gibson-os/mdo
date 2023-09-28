@@ -5,7 +5,6 @@ namespace MDO\Dto;
 
 use Generator;
 use mysqli_result;
-use stdClass;
 
 class Result
 {
@@ -19,7 +18,10 @@ class Result
     public function iterateRecords(): Generator
     {
         while ($row = $this->result->fetch_assoc()) {
-            yield new Record($row);
+            yield new Record(array_map(
+                static fn (mixed $value): Value => new Value($value),
+                $row,
+            ));
         }
     }
 }

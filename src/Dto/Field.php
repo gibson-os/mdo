@@ -52,4 +52,9 @@ readonly class Field
     {
         return $this->length;
     }
+
+    public function isPrimary(): bool
+    {
+        return mb_strtolower($this->extra) === 'pri';
+    }
 }

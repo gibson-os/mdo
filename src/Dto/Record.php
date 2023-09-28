@@ -3,31 +3,43 @@ declare(strict_types=1);
 
 namespace MDO\Dto;
 
-use MDO\Exception\TableException;
+use UnexpectedValueException;
 
 class Record
 {
-    public function __construct(private readonly array $data = [])
+    /**
+     * @param Value[] $values
+     */
+    public function __construct(private readonly array $values = [])
     {
     }
 
-    public function getData(string $prefix = ''): array
+    /**
+     * @return Value[]
+     */
+    public function getValues(string $prefix = ''): array
     {
-        $data = [];
+        $values = [];
 
-        foreach ($this->data as $key => $value) {
+        foreach ($this->values as $key => $value) {
             if (mb_strpos($key, $prefix) !== 0) {
                 continue;
             }
 
-            $data[$key] = $value;
+            $keyWithoutPrefix = str_replace($prefix, '', $key);
+
+            if (is_array($keyWithoutPrefix)) {
+                throw new UnexpectedValueException('Key without prefix is array');
+            }
+
+            $values[(string) $keyWithoutPrefix] = $value;
         }
 
-        return $data;
+        return $values;
     }
 
-    public function get(string $key): null|string|int|float
+    public function get(string $key): ?Value
     {
-        return $this->data[$key] ?? null;
+        return $this->values[$key] ?? null;
     }
 }

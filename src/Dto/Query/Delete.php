@@ -11,7 +11,7 @@ class Delete implements QueryInterface
     use WhereTrait;
     use LimitTrait;
 
-    public function __construct(private readonly Table $table)
+    public function __construct(private readonly Table $table, private readonly ?string $alias = null)
     {
     }
 
@@ -19,14 +19,16 @@ class Delete implements QueryInterface
     {
         $whereString = $this->getWhereString();
         $limitString = $this->getLimitString();
+        $alias = $this->alias;
 
-        return sprintf(
-            'DELETE `%s` FROM `%s`%s WHERE %s%s',
+        return trim(sprintf(
+            'DELETE `%s` FROM `%s`%s%s WHERE %s%s',
+            $alias === null ? $this->table->getTableName() : $alias,
             $this->table->getTableName(),
-            $this->table->getTableName(),
-            trim($this->getJoinsString() . ' '),
+            $alias === null ? '' : ' `' . $alias . '`',
+            trim($this->getJoinsString()),
             $whereString,
             $limitString === '' ? '' : ' LIMIT ' . $limitString,
-        );
+        ));
     }
 }

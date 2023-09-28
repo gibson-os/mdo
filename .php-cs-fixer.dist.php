@@ -4,6 +4,7 @@ declare(strict_types=1);
 return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)
     ->setRules([
+        '@Symfony' => true,
         'align_multiline_comment' => true,
         'array_syntax' => ['syntax' => 'short'],
         'blank_line_before_statement' => true,
@@ -11,10 +12,12 @@ return (new PhpCsFixer\Config())
         'combine_consecutive_issets' => true,
         'combine_consecutive_unsets' => true,
         'compact_nullable_typehint' => true,
+        'global_namespace_import' => true,
         'heredoc_to_nowdoc' => true,
         'is_null' => true,
         'list_syntax' => ['syntax' => 'long'],
         'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
+        'trailing_comma_in_multiline' => ['elements' => ['arguments', 'arrays', 'match', 'parameters']],
         'no_null_property_initialization' => true,
         'echo_tag_syntax' => true,
         'no_superfluous_elseif' => true,
@@ -40,7 +43,7 @@ return (new PhpCsFixer\Config())
         'class_attributes_separation' => true,
         'declare_strict_types' => true,
         'blank_line_after_opening_tag' => false,
-        'no_extra_blank_lines' => false,
+        'no_extra_blank_lines' => true,
         'single_line_throw' => false,
     ])
     ->setFinder(
@@ -49,6 +52,6 @@ return (new PhpCsFixer\Config())
                 __DIR__ . DIRECTORY_SEPARATOR . 'src',
                 __DIR__ . DIRECTORY_SEPARATOR . 'tests',
             ])
-            ->name('*.php')
+            ->name('*.php'),
     )
 ;

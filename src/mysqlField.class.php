@@ -53,8 +53,8 @@ class mysqlField
         if ($this->default == 'CURRENT_TIMESTAMP') {
             $this->setValue($this->default, 'FUNC');
         } elseif (
-            $this->default === null &&
-            $this->null == 'YES'
+            $this->default === null
+            && $this->null == 'YES'
         ) {
             $this->setValue('NULL', 'FUNC');
         } elseif (!empty($this->default)) {
@@ -83,12 +83,12 @@ class mysqlField
         $value = (string) $value;
 
         if (
-            $type == 'FUNC' ||
-            (((preg_match('/int/i', $this->type) && preg_match('/^-?\d+$/', $value)) ||                          // Ganzzahlenfeld
-            (preg_match('/(float|double|decimal)/i', $this->type) && preg_match('/^-?\d+\.?\d*$/', $value)) ||  // Gleitzahlenfeld
-            (preg_match('/enum/i', $this->type) && preg_match('/' . $value . '/', $this->type)) ||                    // Auswahl
-             preg_match('/(char|text|blob|time|date|year|binary)/i', $this->type)) &&                               // Alles andere
-            (strlen($value) <= $this->length || $this->length === 0))                      // Länge des Feldes
+            $type == 'FUNC'
+            || (((preg_match('/int/i', $this->type) && preg_match('/^-?\d+$/', $value))                          // Ganzzahlenfeld
+            || (preg_match('/(float|double|decimal)/i', $this->type) && preg_match('/^-?\d+\.?\d*$/', $value))  // Gleitzahlenfeld
+            || (preg_match('/enum/i', $this->type) && preg_match('/' . $value . '/', $this->type))                    // Auswahl
+             || preg_match('/(char|text|blob|time|date|year|binary)/i', $this->type))                               // Alles andere
+            && (strlen($value) <= $this->length || $this->length === 0))                      // Länge des Feldes
         ) {
             $this->value = $value;
             $this->valueType = $type;

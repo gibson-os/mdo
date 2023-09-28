@@ -57,7 +57,7 @@ class Client
             $parameters = $query->getParameters();
             $query = $query->getQuery();
         }
-        
+
         $statement = $this->mysqli->prepare($query);
 
         if (!$statement instanceof mysqli_stmt) {
@@ -68,66 +68,7 @@ class Client
         }
 
         if (count($parameters)) {
-            $parameterTypes = '';
-            $longData = [];
-
-            preg_match_all('/:\w+/', $query, $namedParameters);
-            $namedParameters = $namedParameters[0];
-
-            if (count($namedParameters)) {
-                preg_replace('/:\w+/', '?', $query);
-                $newParameters = [];
-
-                foreach ($namedParameters as $namedParameter) {
-                    $newParameters[] = $parameters[$namedParameter];
-                }
-
-                $parameters = $newParameters;
-            }
-
-            foreach ($parameters as $index => $parameter) {
-                if (is_int($parameter)) {
-                    $parameterTypes .= 'i';
-                } elseif (is_float($parameter)) {
-                    $parameterTypes .= 'd';
-                } elseif (is_object($parameter) && enum_exists($parameter::class)) {
-                    $parameterTypes .= 's';
-                    $parameters[$index] = $parameter->name;
-                } else {
-                    $length = strlen($parameter);
-
-                    for ($i = 0; $i < $length; $i++) {
-                        if (ord($parameter[$i]) > 127) {
-                            $parameterTypes .= 'b';
-                            $longData[$index] = $parameter;
-
-                            continue 2;
-                        }
-                    }
-
-                    $parameterTypes .= 's';
-                }
-            }
-
-            if (!$statement->bind_param($parameterTypes, ...$parameters)) {
-                throw new ClientException(sprintf(
-                    'Parameter bind error. Types: %s | Parameters: %s | Query: %s',
-                    $parameterTypes,
-                    implode(', ', $parameters),
-                    $query,
-                ));
-            }
-
-            foreach ($longData as $index => $data) {
-                if (!$statement->send_long_data($index, $data)) {
-                    throw new ClientException(sprintf(
-                        'Send long data error. Indes: %d | Data: %s | Query: %s',
-                        $index,
-                        $data,
-                        $query,
-                    ));
-                }
-            }
+            $this->setParameters($query, $parameters, $statement);
         }
 
         if (!$statement->execute()) {
@@ -154,5 +95,80 @@ class Client
     public function getDatabaseName(): string
     {
         return $this->databaseName;
+    }
+
+    /**
+     * @throws ClientException
+     */
+    private function setParameters(string $query, array $parameters, mysqli_stmt $statement): void
+    {
+        $longData = [];
+
+        preg_match_all('/:\w+/', $query, $namedParameters);
+        $namedParameters = $namedParameters[0];
+
+        if (count($namedParameters)) {
+            preg_replace('/:\w+/', '?', $query);
+            $newParameters = [];
+
+            foreach ($namedParameters as $namedParameter) {
+                $newParameters[] = $parameters[$namedParameter];
+            }
+
+            $parameters = $newParameters;
+        }
+
+        $parameterTypes = $this->getParameterTypes($parameters, $longData);
+
+        if (!$statement->bind_param($parameterTypes, ...$parameters)) {
+            throw new ClientException(sprintf(
+                'Parameter bind error. Types: %s | Parameters: %s | Query: %s',
+                $parameterTypes,
+                implode(', ', $parameters),
+                $query,
+            ));
+        }
+
+        foreach ($longData as $index => $data) {
+            if (!$statement->send_long_data($index, $data)) {
+                throw new ClientException(sprintf(
+                    'Send long data error. Indes: %d | Data: %s | Query: %s',
+                    $index,
+                    $data,
+                    $query,
+                ));
+            }
+        }
+    }
+
+    private function getParameterTypes(array $parameters, array $longData): string
+    {
+        $parameterTypes = '';
+
+        foreach ($parameters as $index => $parameter) {
+            if (is_int($parameter)) {
+                $parameterTypes .= 'i';
+            } elseif (is_float($parameter)) {
+                $parameterTypes .= 'd';
+            } elseif (is_object($parameter) && enum_exists($parameter::class)) {
+                $parameterTypes .= 's';
+                $parameters[$index] = $parameter->name;
+            } else {
+                $length = strlen($parameter);
+
+                for ($i = 0; $i < $length; ++$i) {
+                    if (ord($parameter[$i]) > 127) {
+                        $parameterTypes .= 'b';
+                        $longData[$index] = $parameter;
+
+                        continue 2;
+                    }
+                }
+
+                $parameterTypes .= 's';
+            }
+        }
+
+        return $parameterTypes;
     }
 }

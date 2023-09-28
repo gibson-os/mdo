@@ -35,8 +35,8 @@ class mysqlDatabase
         $this->Mysqli->query('SET CHARACTER SET utf8;');
 
         if (
-            !empty($database) &&
-            !$this->useDatabase($database)
+            !empty($database)
+            && !$this->useDatabase($database)
         ) {
             return false;
         }
@@ -122,7 +122,7 @@ class mysqlDatabase
                 } else {
                     $length = strlen($parameter);
 
-                    for ($i = 0; $i < $length; $i++) {
+                    for ($i = 0; $i < $length; ++$i) {
                         if (ord($parameter[$i]) > 127) {
                             $parameterTypes .= 'b';
                             $longData[$index] = $parameter;

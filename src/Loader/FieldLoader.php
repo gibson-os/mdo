@@ -16,6 +16,7 @@ class FieldLoader
 
     /**
      * @throws ClientException
+     *
      * @return array<string, Field>
      */
     public function loadFields(string $tableName): array
@@ -24,22 +25,22 @@ class FieldLoader
         $fields = [];
 
         foreach ($result->iterateRecords() as $field) {
-            $type = $field->get('Type');
+            $type = $field->get('Type')?->getValue();
             $length = 0;
 
-            if (preg_match('/\(\d*\)/', (string) $field->get('Type'), $fieldLength, PREG_OFFSET_CAPTURE)) {
+            if (preg_match('/\(\d*\)/', (string) $type, $fieldLength, PREG_OFFSET_CAPTURE)) {
                 $length = substr($fieldLength[0][0], 1, strlen($fieldLength[0][0]) - 2);
-                $type = preg_replace('/\(\d*\)/', '', (string) $field->get('Type'));
+                $type = preg_replace('/\(\d*\)/', '', (string) $type);
             }
 
-            $fieldName = (string) $field->get('Field');
+            $fieldName = (string) $field->get('Field')?->getValue();
             $fields[$fieldName] = new Field(
                 $fieldName,
-                mb_strtolower((string) $field->get('Null')) === 'yes',
+                mb_strtolower((string) $field->get('Null')?->getValue()) === 'yes',
                 constant(sprintf('%s::%s', Type::class, $type)),
-                (string) $field->get('Key'),
-                $field->get('Default'),
-                (string) $field->get('Extra'),
+                (string) $field->get('Key')?->getValue(),
+                $field->get('Default')?->getValue(),
+                (string) $field->get('Extra')?->getValue(),
                 $length,
             );
         }

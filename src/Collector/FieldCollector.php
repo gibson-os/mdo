@@ -5,5 +5,4 @@ namespace MDO\Collector;
 
 class FieldCollector
 {
-
 }

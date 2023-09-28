@@ -37,4 +37,15 @@ readonly class Table
             $this->tableName,
         ));
     }
+
+    /**
+     * @return array<string, Field>
+     */
+    public function getPrimaryFields(): array
+    {
+        return array_filter(array_map(
+            static fn (Field $field): ?Field => $field->isPrimary() ? $field : null,
+            $this->fields,
+        ));
+    }
 }

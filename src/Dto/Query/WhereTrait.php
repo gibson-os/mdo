@@ -37,14 +37,19 @@ trait WhereTrait
 
     protected function getWhereString(): string
     {
-        return sprintf('(%s)', implode(') AND (', $this->wheres));
+        $whereConditions = array_map(
+            static fn (Where $where): string => $where->getCondition(),
+            $this->wheres,
+        );
+
+        return sprintf('(%s)', implode(') AND (', $whereConditions));
     }
 
     public function getParameters(): array
     {
         return array_merge(array_map(
             static fn (Where $where): array => $where->getParameters(),
-            $this->getWheres()
+            $this->getWheres(),
         ));
     }
 }

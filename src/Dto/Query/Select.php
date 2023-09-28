@@ -30,10 +30,10 @@ class Select implements QueryInterface
      */
     private array $orders = [];
 
-    public function __construct(private readonly Table $table)
+    public function __construct(private readonly Table $table, private readonly ?string $alias = null)
     {
         $this->selects = array_map(
-            static fn(Field $field): string => sprintf('`%s`', $field->getName()),
+            static fn (Field $field): string => sprintf('`%s`', $field->getName()),
             $this->table->getFields(),
         );
     }
@@ -47,9 +47,10 @@ class Select implements QueryInterface
         $limitString = $this->getLimitString();
 
         return trim(sprintf(
-            'SELECT %s FROM %s %s%s%s%s%s%s',
+            'SELECT %s FROM `%s`%s %s%s%s%s%s%s',
             $selectString,
             $this->table->getTableName(),
+            $this->alias === null ? '' : ' `' . $this->alias . '`',
             trim($this->getJoinsString() . ' '),
             $whereString === '' ? '' : ' WHERE ' . $whereString,
             $groupString === '' ? '' : ' GROUP BY ' . $groupString,

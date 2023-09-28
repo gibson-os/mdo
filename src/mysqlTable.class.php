@@ -113,8 +113,8 @@ class mysqlTable
             } else {
                 foreach ($this->fields as $index => $field) {
                     if (
-                        isset($record[$index]) ||
-                        $record[$field] === null
+                        isset($record[$index])
+                        || $record[$field] === null
                     ) {
                         $this->{$field}->setValue($record[$index]);
                     }
@@ -179,7 +179,7 @@ class mysqlTable
             $unions = $this->unions;
             array_unshift(
                 $unions,
-                trim('SELECT ' . $this->selectFunc . $select . ' FROM `' . $this->database . '`.`' . $this->table . '`' . $this->joins . ' ' . $this->where . $this->groupBy . $this->having)
+                trim('SELECT ' . $this->selectFunc . $select . ' FROM `' . $this->database . '`.`' . $this->table . '`' . $this->joins . ' ' . $this->where . $this->groupBy . $this->having),
             );
 
             return '(' . trim(implode(') UNION ' . $this->unionFunc . ' (', $unions)) . ') ' . $this->orderBy . $this->limit;
@@ -283,8 +283,8 @@ class mysqlTable
             $fieldObject = $this->{$field};
 
             if (
-                $fieldObject->isAutoIncrement() &&
-                empty($fieldObject->getValue())
+                $fieldObject->isAutoIncrement()
+                && empty($fieldObject->getValue())
             ) {
                 continue;
             }
@@ -319,7 +319,7 @@ class mysqlTable
             throw new Exception(
                 'Error: ' . $this->connection->error() . PHP_EOL .
                 'Query: ' . $this->sql . PHP_EOL .
-                'Parameters: [' . implode(', ', $saveStatement['parameters']) . ']'
+                'Parameters: [' . implode(', ', $saveStatement['parameters']) . ']',
             );
         }
 
@@ -336,8 +336,8 @@ class mysqlTable
             $value = $fieldObject->getValue() ?? $fieldObject->getDefaultValue();
 
             if (
-                ($fieldObject->isAutoIncrement() && !$value) ||
-                $value === 'current_timestamp()'
+                ($fieldObject->isAutoIncrement() && !$value)
+                || $value === 'current_timestamp()'
             ) {
                 continue;
             }
@@ -437,8 +437,8 @@ class mysqlTable
     public function last(): bool
     {
         if (
-            isset($this->records[$this->countRecords - 1]) &&
-            $this->load($this->records[$this->countRecords - 1])
+            isset($this->records[$this->countRecords - 1])
+            && $this->load($this->records[$this->countRecords - 1])
         ) {
             $this->selectedRecord = $this->countRecords - 1;
 
@@ -452,8 +452,8 @@ class mysqlTable
     {
         if ($this->selectedRecord < $this->countRecords) {
             if (
-                isset($this->records[$this->selectedRecord + 1]) &&
-                $this->load($this->records[$this->selectedRecord + 1])
+                isset($this->records[$this->selectedRecord + 1])
+                && $this->load($this->records[$this->selectedRecord + 1])
             ) {
                 ++$this->selectedRecord;
 
@@ -468,8 +468,8 @@ class mysqlTable
     {
         if ($this->selectedRecord != 0) {
             if (
-                isset($this->records[$this->selectedRecord - 1]) &&
-                $this->load($this->records[$this->selectedRecord - 1])
+                isset($this->records[$this->selectedRecord - 1])
+                && $this->load($this->records[$this->selectedRecord - 1])
             ) {
                 --$this->selectedRecord;
 
