@@ -5,13 +5,13 @@ namespace MDO\Query;
 
 use MDO\Dto\Field;
 use MDO\Dto\Table;
-use MDO\Enum\OrderDirection;
 
 class SelectQuery implements QueryInterface
 {
     use JoinTrait;
     use WhereTrait;
     use LimitTrait;
+    use OrderByTrait;
 
     /**
      * @var string[]
@@ -24,11 +24,6 @@ class SelectQuery implements QueryInterface
     private array $groups = [];
 
     private ?string $having = null;
-
-    /**
-     * @var array<string, OrderDirection>
-     */
-    private array $orders = [];
 
     public function __construct(private readonly Table $table, private readonly ?string $alias = null)
     {
@@ -51,7 +46,7 @@ class SelectQuery implements QueryInterface
             $selectString,
             $this->table->getTableName(),
             $this->alias === null ? '' : ' `' . $this->alias . '`',
-            trim($this->getJoinsString() . ' '),
+            trim($this->getJoinsString()),
             $whereString === '' ? '' : ' WHERE ' . $whereString,
             $groupString === '' ? '' : ' GROUP BY ' . $groupString,
             $this->having === null ? '' : ' HAVING ' . $this->having,
@@ -79,18 +74,6 @@ class SelectQuery implements QueryInterface
         return $this;
     }
 
-    public function getOrders(): array
-    {
-        return $this->orders;
-    }
-
-    public function setOrder(string $fieldName, OrderDirection $direction = OrderDirection::ASC): SelectQuery
-    {
-        $this->orders[$fieldName] = $direction;
-
-        return $this;
-    }
-
     public function setGroupBy(array $fieldNames, string $having = null): SelectQuery
     {
         $this->groups = $fieldNames;
@@ -113,16 +96,5 @@ class SelectQuery implements QueryInterface
     private function getGroupString(): string
     {
         return implode(', ', $this->groups);
-    }
-
-    private function getOrderString(): string
-    {
-        $orders = [];
-
-        foreach ($this->orders as $fieldName => $direction) {
-            $orders[] = sprintf('%s %s', $fieldName, $direction->value);
-        }
-
-        return implode(', ', $orders);
     }
 }

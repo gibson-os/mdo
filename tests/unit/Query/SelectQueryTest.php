@@ -157,4 +157,21 @@ class SelectQueryTest extends Unit
             $query->getQuery(),
         );
     }
+
+    public function testGetQueryFull(): void
+    {
+        $query = new SelectQuery($this->table);
+        $query
+            ->setJoin(new Join(new Table('marvin', []), 'm', '`g`.`id`=`m`.`galaxy_id`'))
+            ->addWhere(new Where('`arthur`=?', []))
+            ->setGroupBy(['`arthur`', '`dent`'], '`marvin`=?')
+            ->setOrder('`marvin`')
+            ->setLimit(1, 42)
+        ;
+
+        $this->assertEquals(
+            'SELECT (`arthur`) `arthur` FROM `galaxy` JOIN `marvin` `m` ON `g`.`id`=`m`.`galaxy_id` WHERE (`arthur`=?) GROUP BY `arthur`, `dent` HAVING `marvin`=? ORDER BY `marvin` ASC LIMIT 42, 1',
+            $query->getQuery(),
+        );
+    }
 }
