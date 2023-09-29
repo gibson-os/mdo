@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace MDO\Dto\Query;
+namespace MDO\Query;
 
 interface QueryInterface
 {

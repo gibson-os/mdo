@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace MDO\Dto\Query;
+namespace MDO\Query;
 
 use MDO\Dto\Table;
 
-class Delete implements QueryInterface
+class DeleteQuery implements QueryInterface
 {
     use JoinTrait;
     use WhereTrait;

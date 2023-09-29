@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace MDO\Dto\Query;
+namespace MDO\Query;
+
+use MDO\Dto\Query\Join;
 
 trait JoinTrait
 {
@@ -37,17 +39,18 @@ trait JoinTrait
 
     protected function getJoinsString(): string
     {
-        $joinsString = '';
+        $joins = [];
 
         foreach ($this->joins as $join) {
-            $joinsString .= sprintf(
-                '%s JOIN `%s` ON %s',
+            $joins[] = sprintf(
+                '%s JOIN `%s` `%s` ON %s',
                 $join->getType()->value,
                 $join->getTable()->getTableName(),
+                $join->getAlias(),
                 $join->getOn(),
             );
         }
 
-        return $joinsString;
+        return implode(' ', $joins);
     }
 }

@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace MDO\Dto\Query;
+namespace MDO\Query;
 
 use MDO\Dto\Field;
 use MDO\Dto\Table;
 use MDO\Enum\OrderDirection;
 
-class Select implements QueryInterface
+class SelectQuery implements QueryInterface
 {
     use JoinTrait;
     use WhereTrait;
@@ -65,14 +65,14 @@ class Select implements QueryInterface
         return $this->selects;
     }
 
-    public function setSelects(array $selects): Select
+    public function setSelects(array $selects): SelectQuery
     {
         $this->selects = $selects;
 
         return $this;
     }
 
-    public function setSelect(string $select, string $alias): Select
+    public function setSelect(string $select, string $alias): SelectQuery
     {
         $this->selects[$alias] = $select;
 
@@ -84,22 +84,30 @@ class Select implements QueryInterface
         return $this->orders;
     }
 
-    public function setOrder(string $fieldName, OrderDirection $direction): Select
+    public function setOrder(string $fieldName, OrderDirection $direction = OrderDirection::ASC): SelectQuery
     {
         $this->orders[$fieldName] = $direction;
 
         return $this;
     }
 
+    public function setGroupBy(array $fieldNames, string $having = null): SelectQuery
+    {
+        $this->groups = $fieldNames;
+        $this->having = $having;
+
+        return $this;
+    }
+
     private function getSelectString(): string
     {
-        $selectString = '';
+        $selects = [];
 
         foreach ($this->selects as $alias => $select) {
-            $selectString .= sprintf('(%s) `%s`', $select, $alias);
+            $selects[] = sprintf('(%s) `%s`', $select, $alias);
         }
 
-        return $selectString;
+        return implode(', ', $selects);
     }
 
     private function getGroupString(): string

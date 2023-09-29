@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace MDO\Enum;
 
-enum Join: string
+enum JoinType: string
 {
     case INNER = '';
     case LEFT = 'LEFT';

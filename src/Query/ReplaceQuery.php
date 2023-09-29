@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace MDO\Dto\Query;
+namespace MDO\Query;
 
 use MDO\Dto\Field;
 use MDO\Dto\Table;
 use MDO\Dto\Value;
 
-class Replace implements QueryInterface
+class ReplaceQuery implements QueryInterface
 {
     /**
      * @param Value[] $values
@@ -31,7 +31,7 @@ class Replace implements QueryInterface
         return $this->values;
     }
 
-    public function setValues(array $values): Replace
+    public function setValues(array $values): ReplaceQuery
     {
         $this->values = $values;
 

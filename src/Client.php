@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace MDO;
 
-use MDO\Dto\Query\QueryInterface;
 use MDO\Dto\Result;
 use MDO\Exception\ClientException;
+use MDO\Query\QueryInterface;
 use mysqli;
 use mysqli_stmt;
 

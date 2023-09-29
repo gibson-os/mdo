@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace MDO\Dto\Query;
 
 use MDO\Dto\Table;
-use MDO\Enum\Join as JoinType;
+use MDO\Enum\JoinType;
 
 class Join
 {
