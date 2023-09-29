@@ -33,6 +33,7 @@ class FieldLoader
                 $type = preg_replace('/\(\d*\)/', '', (string) $type);
             }
 
+            $type = mb_strtoupper(preg_replace('/(\S*).*/', '$1', (string) $type));
             $fieldName = (string) $field->get('Field')?->getValue();
             $fields[$fieldName] = new Field(
                 $fieldName,
