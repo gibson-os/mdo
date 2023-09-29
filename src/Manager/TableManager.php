@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace MDO\Manager;
 
 use MDO\Dto\Table;
+use MDO\Exception\ClientException;
 use MDO\Loader\FieldLoader;
 
 class TableManager
@@ -17,6 +18,9 @@ class TableManager
     {
     }
 
+    /**
+     * @throws ClientException
+     */
     public function getTable(string $tableName): Table
     {
         $this->tables[$tableName] ??= new Table($tableName, $this->fieldLoader->loadFields($tableName));
