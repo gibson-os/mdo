@@ -25,6 +25,6 @@ class Value
 
     public function hasParameter(): bool
     {
-        return $this->value !== null || $this->type === ValueType::RAW;
+        return $this->value !== null && $this->type === ValueType::RAW;
     }
 }

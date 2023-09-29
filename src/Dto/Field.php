@@ -55,6 +55,6 @@ readonly class Field
 
     public function isPrimary(): bool
     {
-        return mb_strtolower($this->extra) === 'pri';
+        return mb_strtolower($this->key) === 'pri';
     }
 }

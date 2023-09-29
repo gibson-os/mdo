@@ -53,9 +53,12 @@ trait WhereTrait
 
     public function getParameters(): array
     {
-        return array_merge(array_map(
-            static fn (Where $where): array => $where->getParameters(),
-            $this->getWheres(),
-        ));
+        $parameters = [];
+
+        foreach ($this->getWheres() as $where) {
+            $parameters = array_merge($parameters, $where->getParameters());
+        }
+
+        return $parameters;
     }
 }

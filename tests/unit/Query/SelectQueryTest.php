@@ -32,6 +32,10 @@ class SelectQueryTest extends Unit
             'SELECT (`arthur`) `arthur` FROM `galaxy`',
             $query->getQuery(),
         );
+        $this->assertEquals(
+            [],
+            $query->getParameters(),
+        );
     }
 
     public function testGetQueryOverwriteSelect(): void
@@ -43,6 +47,10 @@ class SelectQueryTest extends Unit
             'SELECT (MAX(`arthur`)) `arthur` FROM `galaxy`',
             $query->getQuery(),
         );
+        $this->assertEquals(
+            [],
+            $query->getParameters(),
+        );
     }
 
     public function testGetQueryAddSelect(): void
@@ -53,6 +61,10 @@ class SelectQueryTest extends Unit
         $this->assertEquals(
             'SELECT (`arthur`) `arthur`, (MAX(`dent`)) `dent` FROM `galaxy`',
             $query->getQuery(),
+        );
+        $this->assertEquals(
+            [],
+            $query->getParameters(),
         );
     }
 
@@ -67,6 +79,10 @@ class SelectQueryTest extends Unit
         $this->assertEquals(
             'SELECT (MIN(`arthur`)) `arthur`, (MAX(`dent`)) `dent` FROM `galaxy`',
             $query->getQuery(),
+        );
+        $this->assertEquals(
+            [],
+            $query->getParameters(),
         );
     }
 
@@ -84,16 +100,24 @@ class SelectQueryTest extends Unit
             'LEFT JOIN `42` `z` ON `on`',
             $query->getQuery(),
         );
+        $this->assertEquals(
+            [],
+            $query->getParameters(),
+        );
     }
 
     public function testGetQueryWithWhere(): void
     {
         $query = new SelectQuery($this->table);
-        $query->addWhere(new Where('`arthur`=?', []));
+        $query->addWhere(new Where('`arthur`=?', ['dent']));
 
         $this->assertEquals(
             'SELECT (`arthur`) `arthur` FROM `galaxy`  WHERE (`arthur`=?)',
             $query->getQuery(),
+        );
+        $this->assertEquals(
+            ['dent'],
+            $query->getParameters(),
         );
     }
 
@@ -106,6 +130,10 @@ class SelectQueryTest extends Unit
             'SELECT (`arthur`) `arthur` FROM `galaxy`  GROUP BY `arthur`, `dent`',
             $query->getQuery(),
         );
+        $this->assertEquals(
+            [],
+            $query->getParameters(),
+        );
     }
 
     public function testGetQueryWithGroupByHaving(): void
@@ -116,6 +144,10 @@ class SelectQueryTest extends Unit
         $this->assertEquals(
             'SELECT (`arthur`) `arthur` FROM `galaxy`  GROUP BY `arthur`, `dent` HAVING `marvin`=?',
             $query->getQuery(),
+        );
+        $this->assertEquals(
+            [],
+            $query->getParameters(),
         );
     }
 
@@ -130,6 +162,10 @@ class SelectQueryTest extends Unit
         $this->assertEquals(
             'SELECT (`arthur`) `arthur` FROM `galaxy`  ORDER BY `marvin` ASC, `dent` DESC',
             $query->getQuery(),
+        );
+        $this->assertEquals(
+            [],
+            $query->getParameters(),
         );
     }
 
@@ -163,7 +199,7 @@ class SelectQueryTest extends Unit
         $query = new SelectQuery($this->table);
         $query
             ->setJoin(new Join(new Table('marvin', []), 'm', '`g`.`id`=`m`.`galaxy_id`'))
-            ->addWhere(new Where('`arthur`=?', []))
+            ->addWhere(new Where('`arthur`=?', ['dent']))
             ->setGroupBy(['`arthur`', '`dent`'], '`marvin`=?')
             ->setOrder('`marvin`')
             ->setLimit(1, 42)
@@ -172,6 +208,10 @@ class SelectQueryTest extends Unit
         $this->assertEquals(
             'SELECT (`arthur`) `arthur` FROM `galaxy` JOIN `marvin` `m` ON `g`.`id`=`m`.`galaxy_id` WHERE (`arthur`=?) GROUP BY `arthur`, `dent` HAVING `marvin`=? ORDER BY `marvin` ASC LIMIT 42, 1',
             $query->getQuery(),
+        );
+        $this->assertEquals(
+            ['dent'],
+            $query->getParameters(),
         );
     }
 }

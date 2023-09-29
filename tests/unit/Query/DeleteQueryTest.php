@@ -32,6 +32,10 @@ class DeleteQueryTest extends Unit
             'DELETE `galaxy` FROM `galaxy`  WHERE',
             $query->getQuery(),
         );
+        $this->assertEquals(
+            [],
+            $query->getParameters(),
+        );
     }
 
     public function testGetQueryWithAlias(): void
@@ -42,16 +46,24 @@ class DeleteQueryTest extends Unit
             'DELETE `g` FROM `galaxy` `g`  WHERE',
             $query->getQuery(),
         );
+        $this->assertEquals(
+            [],
+            $query->getParameters(),
+        );
     }
 
     public function testGetQueryWithWhere(): void
     {
         $query = new DeleteQuery($this->table);
-        $query->addWhere(new Where('`arthur`=?', []));
+        $query->addWhere(new Where('`arthur`=?', ['dent']));
 
         $this->assertEquals(
             'DELETE `galaxy` FROM `galaxy`  WHERE (`arthur`=?)',
             $query->getQuery(),
+        );
+        $this->assertEquals(
+            ['dent'],
+            $query->getParameters(),
         );
     }
 
@@ -59,7 +71,7 @@ class DeleteQueryTest extends Unit
     {
         $query = new DeleteQuery($this->table);
         $query
-            ->addWhere(new Where('`arthur`=?', []))
+            ->addWhere(new Where('`arthur`=?', ['dent']))
             ->setJoin(new Join(new Table('marvin', []), 'm', '`g`.`id`=`m`.`galaxy_id`'))
             ->setJoin(new Join(new Table('42', []), 'z', '`on`', JoinType::LEFT))
         ;
@@ -71,13 +83,17 @@ class DeleteQueryTest extends Unit
             'WHERE (`arthur`=?)',
             $query->getQuery(),
         );
+        $this->assertEquals(
+            ['dent'],
+            $query->getParameters(),
+        );
     }
 
     public function testGetQueryWithOrderBy(): void
     {
         $query = new DeleteQuery($this->table);
         $query
-            ->addWhere(new Where('`arthur`=?', []))
+            ->addWhere(new Where('`arthur`=?', ['dent']))
             ->setOrder('`marvin`')
             ->setOrder('`dent`', OrderDirection::DESC)
         ;
@@ -85,6 +101,31 @@ class DeleteQueryTest extends Unit
         $this->assertEquals(
             'DELETE `galaxy` FROM `galaxy`  WHERE (`arthur`=?) ORDER BY `marvin` ASC, `dent` DESC',
             $query->getQuery(),
+        );
+        $this->assertEquals(
+            ['dent'],
+            $query->getParameters(),
+        );
+    }
+
+    public function testGetQueryFull(): void
+    {
+        $query = new DeleteQuery($this->table, 'g');
+        $query
+            ->addWhere(new Where('`arthur`=?', ['dent']))
+            ->setJoin(new Join(new Table('marvin', []), 'm', '`g`.`id`=`m`.`galaxy_id`'))
+            ->setJoin(new Join(new Table('42', []), 'z', '`on`', JoinType::LEFT))
+            ->setOrder('`marvin`')
+            ->setOrder('`dent`', OrderDirection::DESC)
+        ;
+
+        $this->assertEquals(
+            'DELETE `g` FROM `galaxy` `g` JOIN `marvin` `m` ON `g`.`id`=`m`.`galaxy_id` LEFT JOIN `42` `z` ON `on` WHERE (`arthur`=?) ORDER BY `marvin` ASC, `dent` DESC',
+            $query->getQuery(),
+        );
+        $this->assertEquals(
+            ['dent'],
+            $query->getParameters(),
         );
     }
 
