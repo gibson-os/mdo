@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace unit\Manager;
+namespace MDO\Test\Unit\Manager;
 
 use Codeception\Test\Unit;
 use MDO\Dto\Field;

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace unit\Loader;
+namespace MDO\Test\Unit\Loader;
 
 use Codeception\Test\Unit;
 use MDO\Client;

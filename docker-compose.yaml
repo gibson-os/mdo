@@ -1,0 +1,15 @@
+version: '3'
+services:
+  mysql:
+    image: mariadb:latest
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      TZ: "Europe/Berlin"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+      MYSQL_ROOT_PASSWORD: "ldspFfsd8D0fds"
+      MYSQL_USER: 'mdo'
+      MYSQL_PASSWORD: 'sZXpQ6V72adFtTsv'
+      MYSQL_DATABASE: 'mdo'

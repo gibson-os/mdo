@@ -20,7 +20,9 @@
       "src"
     ],
     "psr-4": {
-      "MDO\\": "src/"
+      "MDO\\": "src/",
+      "MDO\\Test\\Unit\\": "tests/unit/",
+      "MDO\\Test\\Functional\\": "tests/functional/"
     }
   },
   "scripts": {

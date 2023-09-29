@@ -14,7 +14,7 @@ readonly class Field
         private string $key,
         private string|int|float|null $default,
         private string $extra,
-        private float|int|string $length = 0,
+        private int $length = 0,
     ) {
     }
 
@@ -48,7 +48,7 @@ readonly class Field
         return $this->extra;
     }
 
-    public function getLength(): float|int|string
+    public function getLength(): int
     {
         return $this->length;
     }

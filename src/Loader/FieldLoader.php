@@ -24,16 +24,16 @@ class FieldLoader
         $result = $this->client->execute(sprintf('SHOW FIELDS FROM `%s`', $tableName));
         $fields = [];
 
-        foreach ($result->iterateRecords() as $field) {
+        foreach ($result?->iterateRecords() ?? [] as $field) {
             $type = $field->get('Type')?->getValue();
             $length = 0;
 
             if (preg_match('/\(\d*\)/', (string) $type, $fieldLength, PREG_OFFSET_CAPTURE)) {
-                $length = substr($fieldLength[0][0], 1, strlen($fieldLength[0][0]) - 2);
+                $length = (int) substr($fieldLength[0][0], 1, strlen($fieldLength[0][0]) - 2);
                 $type = preg_replace('/\(\d*\)/', '', (string) $type);
             }
 
-            $type = mb_strtoupper(preg_replace('/(\S*).*/', '$1', (string) $type));
+            $type = mb_strtoupper(preg_replace('/(\w*).*/', '$1', (string) $type));
             $fieldName = (string) $field->get('Field')?->getValue();
             $fields[$fieldName] = new Field(
                 $fieldName,

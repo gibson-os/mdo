@@ -19,12 +19,15 @@ class Client
         private readonly string $host,
         private readonly string $user,
         private readonly string $password,
-        string $databaseName,
+        string $databaseName = null,
     ) {
         $this->mysqli = new mysqli($this->host, $this->user, $this->password);
-        $this->mysqli->query('SET NAMES "utf8"');
-        $this->mysqli->query('SET CHARACTER SET utf8');
-        $this->useDatabase($databaseName);
+        $this->execute('SET NAMES "utf8"');
+        $this->execute('SET CHARACTER SET utf8');
+
+        if ($databaseName !== null) {
+            $this->useDatabase($databaseName);
+        }
     }
 
     public function useDatabase(string $databaseName): bool
@@ -51,7 +54,7 @@ class Client
     /**
      * @throws ClientException
      */
-    public function execute(string|QueryInterface $query, array $parameters = []): Result
+    public function execute(string|QueryInterface $query, array $parameters = []): ?Result
     {
         if ($query instanceof QueryInterface) {
             $parameters = $query->getParameters();
@@ -81,15 +84,7 @@ class Client
 
         $result = $statement->get_result();
 
-        if ($result === false) {
-            throw new ClientException(sprintf(
-                'Error: %s | Query: %s',
-                $this->getError(),
-                $query,
-            ));
-        }
-
-        return new Result($result);
+        return $result === false ? null : new Result($result);
     }
 
     public function getDatabaseName(): string

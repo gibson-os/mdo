@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace unit\Query;
+namespace MDO\Test\Unit\Query;
 
 use Codeception\Test\Unit;
 use MDO\Dto\Field;
