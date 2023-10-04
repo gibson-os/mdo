@@ -13,8 +13,11 @@ class Client
 {
     private mysqli $mysqli;
 
-    private string $databaseName;
+    private ?string $databaseName = null;
 
+    /**
+     * @throws ClientException
+     */
     public function __construct(
         private readonly string $host,
         private readonly string $user,
@@ -87,7 +90,7 @@ class Client
         return $result === false ? null : new Result($result);
     }
 
-    public function getDatabaseName(): string
+    public function getDatabaseName(): ?string
     {
         return $this->databaseName;
     }

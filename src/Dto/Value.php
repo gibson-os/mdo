@@ -8,8 +8,8 @@ use MDO\Enum\ValueType;
 class Value
 {
     public function __construct(
-        private readonly string|int|float|null $value,
-        private readonly ValueType $type = ValueType::RAW,
+        private string|int|float|null $value,
+        private ValueType $type = ValueType::RAW,
     ) {
     }
 
@@ -21,6 +21,13 @@ class Value
     public function getType(): ValueType
     {
         return $this->type;
+    }
+
+    public function setValue(float|int|string|null $value, ValueType $type = ValueType::RAW): Value
+    {
+        $this->value = $value;
+
+        return $this;
     }
 
     public function hasParameter(): bool

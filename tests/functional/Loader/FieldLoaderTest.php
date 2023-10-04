@@ -5,20 +5,10 @@ namespace MDO\Test\Functional\Loader;
 
 use MDO\Dto\Field;
 use MDO\Enum\Type;
-use MDO\Loader\FieldLoader;
 use MDO\Test\Functional\AbstractFunctionalTest;
 
 class FieldLoaderTest extends AbstractFunctionalTest
 {
-    private FieldLoader $fieldLoader;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->fieldLoader = new FieldLoader($this->client);
-    }
-
     public function testLoadFields(): void
     {
         $this->assertEquals(

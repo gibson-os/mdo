@@ -18,11 +18,13 @@ class ReplaceQuery implements QueryInterface
 
     public function getQuery(): string
     {
+        $setString = $this->getSetString();
+
         return trim(sprintf(
             'INSERT INTO `%s` SET %s ON DUPLICATE KEY UPDATE %s',
             $this->table->getTableName(),
-            $this->getSetString(),
-            $this->getPrimaryString(),
+            $setString,
+            $setString,
         ));
     }
 
@@ -51,17 +53,6 @@ class ReplaceQuery implements QueryInterface
         }
 
         return implode(', ', $set);
-    }
-
-    private function getPrimaryString(): string
-    {
-        $primaries = [];
-
-        foreach ($this->table->getPrimaryFields() as $field) {
-            $primaries[] = $this->getFieldSetString($field, $this->values[$field->getName()] ?? null);
-        }
-
-        return implode(', ', $primaries);
     }
 
     private function getFieldSetString(Field $field, ?Value $value): string
@@ -101,10 +92,6 @@ class ReplaceQuery implements QueryInterface
             $parameters[] = $value->getValue();
         }
 
-        foreach ($this->table->getPrimaryFields() as $field) {
-            $parameters[] = $this->values[$field->getName()]?->getValue();
-        }
-
-        return $parameters;
+        return array_merge($parameters, $parameters);
     }
 }

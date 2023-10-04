@@ -19,7 +19,7 @@ class Result
     {
         while ($row = $this->result->fetch_assoc()) {
             yield new Record(array_map(
-                static fn (mixed $value): Value => new Value($value),
+                static fn (float|int|string|null $value): Value => new Value($value),
                 $row,
             ));
         }

@@ -5,14 +5,23 @@ namespace MDO\Test\Functional;
 
 use Codeception\Test\Unit;
 use MDO\Client;
+use MDO\Loader\FieldLoader;
+use MDO\Manager\TableManager;
 
 class AbstractFunctionalTest extends Unit
 {
     protected Client $client;
 
+    protected FieldLoader $fieldLoader;
+
+    protected TableManager $tableManager;
+
     protected function setUp(): void
     {
         $this->client = new Client('localhost', 'root', 'ldspFfsd8D0fds');
+        $this->fieldLoader = new FieldLoader($this->client);
+        $this->tableManager = new TableManager($this->fieldLoader);
+
         $this->client->execute('DROP DATABASE IF EXISTS `mdo`');
         $this->client->execute('CREATE DATABASE `mdo`');
         $this->client->useDatabase('mdo');
