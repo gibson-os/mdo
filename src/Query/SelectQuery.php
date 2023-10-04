@@ -33,6 +33,16 @@ class SelectQuery implements QueryInterface
         );
     }
 
+    public function getTable(): Table
+    {
+        return $this->table;
+    }
+
+    public function getAlias(): ?string
+    {
+        return $this->alias;
+    }
+
     public function getQuery(): string
     {
         $selectString = $this->getSelectString();

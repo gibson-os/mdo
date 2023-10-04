@@ -16,6 +16,11 @@ class ReplaceQuery implements QueryInterface
     {
     }
 
+    public function getTable(): Table
+    {
+        return $this->table;
+    }
+
     public function getQuery(): string
     {
         $setString = $this->getSetString();

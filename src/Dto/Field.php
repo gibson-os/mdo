@@ -57,4 +57,9 @@ readonly class Field
     {
         return mb_strtolower($this->key) === 'pri';
     }
+
+    public function hasAutoIncrement(): bool
+    {
+        return mb_strtolower($this->extra) === 'auto_increment';
+    }
 }

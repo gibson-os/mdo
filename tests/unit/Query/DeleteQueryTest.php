@@ -72,8 +72,8 @@ class DeleteQueryTest extends Unit
         $query = new DeleteQuery($this->table);
         $query
             ->addWhere(new Where('`arthur`=?', ['dent']))
-            ->setJoin(new Join(new Table('marvin', []), 'm', '`g`.`id`=`m`.`galaxy_id`'))
-            ->setJoin(new Join(new Table('42', []), 'z', '`on`', JoinType::LEFT))
+            ->addJoin(new Join(new Table('marvin', []), 'm', '`g`.`id`=`m`.`galaxy_id`'))
+            ->addJoin(new Join(new Table('42', []), 'z', '`on`', JoinType::LEFT))
         ;
 
         $this->assertEquals(
@@ -113,8 +113,8 @@ class DeleteQueryTest extends Unit
         $query = new DeleteQuery($this->table, 'g');
         $query
             ->addWhere(new Where('`arthur`=?', ['dent']))
-            ->setJoin(new Join(new Table('marvin', []), 'm', '`g`.`id`=`m`.`galaxy_id`'))
-            ->setJoin(new Join(new Table('42', []), 'z', '`on`', JoinType::LEFT))
+            ->addJoin(new Join(new Table('marvin', []), 'm', '`g`.`id`=`m`.`galaxy_id`'))
+            ->addJoin(new Join(new Table('42', []), 'z', '`on`', JoinType::LEFT))
             ->setOrder('`marvin`')
             ->setOrder('`dent`', OrderDirection::DESC)
         ;

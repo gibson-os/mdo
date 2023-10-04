@@ -30,7 +30,7 @@ trait JoinTrait
         return $this;
     }
 
-    public function setJoin(Join $join): self
+    public function addJoin(Join $join): self
     {
         $this->joins[] = $join;
 

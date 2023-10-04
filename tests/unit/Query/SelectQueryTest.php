@@ -90,8 +90,8 @@ class SelectQueryTest extends Unit
     {
         $query = new SelectQuery($this->table, 'g');
         $query
-            ->setJoin(new Join(new Table('marvin', []), 'm', '`g`.`id`=`m`.`galaxy_id`'))
-            ->setJoin(new Join(new Table('42', []), 'z', '`on`', JoinType::LEFT))
+            ->addJoin(new Join(new Table('marvin', []), 'm', '`g`.`id`=`m`.`galaxy_id`'))
+            ->addJoin(new Join(new Table('42', []), 'z', '`on`', JoinType::LEFT))
         ;
 
         $this->assertEquals(
@@ -198,7 +198,7 @@ class SelectQueryTest extends Unit
     {
         $query = new SelectQuery($this->table);
         $query
-            ->setJoin(new Join(new Table('marvin', []), 'm', '`g`.`id`=`m`.`galaxy_id`'))
+            ->addJoin(new Join(new Table('marvin', []), 'm', '`g`.`id`=`m`.`galaxy_id`'))
             ->addWhere(new Where('`arthur`=?', ['dent']))
             ->setGroupBy(['`arthur`', '`dent`'], '`marvin`=?')
             ->setOrder('`marvin`')

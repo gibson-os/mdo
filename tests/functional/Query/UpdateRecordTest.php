@@ -24,14 +24,7 @@ class UpdateRecordTest extends AbstractFunctionalTest
                 'method' => new Value('GET'),
             ],
         );
-        $this->client->execute($replaceQuery);
-
-        $selectQuery = (new SelectQuery($table))
-            ->addWhere(new Where('`name`=?', ['dent']))
-        ;
-        $result = $this->client->execute($selectQuery);
-        /** @var Record $record */
-        $record = $result->iterateRecords()->current();
+        $record = $this->replaceService->replaceAndLoadRecord($replaceQuery);
         $id = $record->get('id')->getValue();
 
         $this->assertEquals('dent', $record->get('name')->getValue());
@@ -69,14 +62,7 @@ class UpdateRecordTest extends AbstractFunctionalTest
                 'method' => new Value('GET'),
             ],
         );
-        $this->client->execute($replaceQuery);
-
-        $selectQuery = (new SelectQuery($table))
-            ->addWhere(new Where('`name`=?', ['dent']))
-        ;
-        $result = $this->client->execute($selectQuery);
-        /** @var Record $record */
-        $record = $result->iterateRecords()->current();
+        $record = $this->replaceService->replaceAndLoadRecord($replaceQuery);
         $id = $record->get('id')->getValue();
 
         $this->assertEquals('dent', $record->get('name')->getValue());
@@ -114,14 +100,7 @@ class UpdateRecordTest extends AbstractFunctionalTest
                 'method' => new Value('GET'),
             ],
         );
-        $this->client->execute($replaceQuery);
-
-        $selectQuery = (new SelectQuery($table))
-            ->addWhere(new Where('`name`=?', ['dent']))
-        ;
-        $result = $this->client->execute($selectQuery);
-        /** @var Record $record */
-        $record = $result->iterateRecords()->current();
+        $record = $this->replaceService->replaceAndLoadRecord($replaceQuery);
         $id = $record->get('id')->getValue();
 
         $this->assertEquals('dent', $record->get('name')->getValue());
@@ -169,14 +148,7 @@ class UpdateRecordTest extends AbstractFunctionalTest
                 'method' => new Value('GET'),
             ],
         );
-        $this->client->execute($replaceQuery);
-
-        $selectQuery = (new SelectQuery($table))
-            ->addWhere(new Where('`name`=?', ['dent']))
-        ;
-        $result = $this->client->execute($selectQuery);
-        /** @var Record $record */
-        $record = $result->iterateRecords()->current();
+        $record = $this->replaceService->replaceAndLoadRecord($replaceQuery);
         $id = $record->get('id')->getValue();
 
         $this->assertEquals('dent', $record->get('name')->getValue());

@@ -7,6 +7,7 @@ use Codeception\Test\Unit;
 use MDO\Client;
 use MDO\Loader\FieldLoader;
 use MDO\Manager\TableManager;
+use MDO\Service\ReplaceService;
 
 class AbstractFunctionalTest extends Unit
 {
@@ -15,6 +16,8 @@ class AbstractFunctionalTest extends Unit
     protected FieldLoader $fieldLoader;
 
     protected TableManager $tableManager;
+
+    protected ReplaceService $replaceService;
 
     protected function setUp(): void
     {
@@ -45,6 +48,8 @@ class AbstractFunctionalTest extends Unit
                 'constraint `uniqueNameModule_id` unique (`name`)' .
             ') charset = utf8',
         );
+
+        $this->replaceService = new ReplaceService($this->client);
     }
 
     protected function tearDown(): void

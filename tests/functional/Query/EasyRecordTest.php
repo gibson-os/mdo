@@ -3,11 +3,8 @@ declare(strict_types=1);
 
 namespace MDO\Test\Functional\Query;
 
-use MDO\Dto\Query\Where;
-use MDO\Dto\Record;
 use MDO\Dto\Value;
 use MDO\Query\ReplaceQuery;
-use MDO\Query\SelectQuery;
 use MDO\Test\Functional\AbstractFunctionalTest;
 
 class EasyRecordTest extends AbstractFunctionalTest
@@ -25,13 +22,7 @@ class EasyRecordTest extends AbstractFunctionalTest
             ],
         );
         $this->client->execute($replaceQuery);
-
-        $selectQuery = (new SelectQuery($table))
-            ->addWhere(new Where('`name`=?', ['dent']))
-        ;
-        $result = $this->client->execute($selectQuery);
-        /** @var Record $record */
-        $record = $result->iterateRecords()->current();
+        $record = $this->replaceService->replaceAndLoadRecord($replaceQuery);
 
         $this->assertEquals('dent', $record->get('name')->getValue());
         $this->assertNull($record->get('description')->getValue());
