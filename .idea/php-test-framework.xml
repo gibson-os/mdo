@@ -20,6 +20,13 @@
           </versions>
         </cache>
       </tool>
+      <tool tool_name="PHPUnit">
+        <cache>
+          <versions>
+            <info id="LocalC:\Users\Meins\Documents\Projekte\mdo\vendor\autoload.php" version="9.6.13" />
+          </versions>
+        </cache>
+      </tool>
     </tools_cache>
   </component>
 </project>

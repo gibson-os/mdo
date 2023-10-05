@@ -40,7 +40,7 @@ class ReplaceService
         foreach ($table->getFields() as $field) {
             $value = $values[$field->getName()] ?? null;
 
-            if ($value === null || !$value->hasParameter()) {
+            if ($value === null) {
                 continue;
             }
 
