@@ -1,16 +1,7 @@
 <?php
 declare(strict_types=1);
 /**
- * MDO.
- *
- * @author Benjamin Wollenweber
- *
- * @package MDO
- *
- * @copyright 2013
- */
-/**
- * MySQL Datenbank.
+ * @deprecated
  */
 class mysqlDatabase
 {

@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+/**
+ * @deprecated
+ */
 class mysqlRegistry
 {
     private static ?mysqlRegistry $instance = null;
