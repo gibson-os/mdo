@@ -238,16 +238,16 @@
         },
         {
             "name": "captainhook/captainhook",
-            "version": "5.16.4",
+            "version": "5.17.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/captainhookphp/captainhook.git",
-                "reference": "524c8660551bafe9c7211440a71a35984e8dfc4b"
+                "reference": "cac493cfacf14f3a2d16b4ebff9a3bc9adb4c68d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/captainhookphp/captainhook/zipball/524c8660551bafe9c7211440a71a35984e8dfc4b",
-                "reference": "524c8660551bafe9c7211440a71a35984e8dfc4b",
+                "url": "https://api.github.com/repos/captainhookphp/captainhook/zipball/cac493cfacf14f3a2d16b4ebff9a3bc9adb4c68d",
+                "reference": "cac493cfacf14f3a2d16b4ebff9a3bc9adb4c68d",
                 "shasum": ""
             },
             "require": {
@@ -257,7 +257,7 @@
                 "php": ">=7.4",
                 "sebastianfeldmann/camino": "^0.9.2",
                 "sebastianfeldmann/cli": "^3.3",
-                "sebastianfeldmann/git": "^3.8.9",
+                "sebastianfeldmann/git": "^3.9",
                 "symfony/console": "^2.7 || ^3.0 || ^4.0 || ^5.0 || ^6.0",
                 "symfony/filesystem": "^2.7 || ^3.0 || ^4.0 || ^5.0 || ^6.0",
                 "symfony/process": "^2.7 || ^3.0 || ^4.0 || ^5.0 || ^6.0"
@@ -309,7 +309,7 @@
             ],
             "support": {
                 "issues": "https://github.com/captainhookphp/captainhook/issues",
-                "source": "https://github.com/captainhookphp/captainhook/tree/5.16.4"
+                "source": "https://github.com/captainhookphp/captainhook/tree/5.17.3"
             },
             "funding": [
                 {
@@ -317,7 +317,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-04-17T19:48:47+00:00"
+            "time": "2023-10-04T11:51:41+00:00"
         },
         {
             "name": "captainhook/plugin-composer",
@@ -1178,16 +1178,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.30.0",
+            "version": "v3.34.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "95c64693b2f149966a2bc05a7a4981b0343ea52f"
+                "reference": "98bf1b1068b4ceddbbc2a2b70b67a5e380add9e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/95c64693b2f149966a2bc05a7a4981b0343ea52f",
-                "reference": "95c64693b2f149966a2bc05a7a4981b0343ea52f",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/98bf1b1068b4ceddbbc2a2b70b67a5e380add9e3",
+                "reference": "98bf1b1068b4ceddbbc2a2b70b67a5e380add9e3",
                 "shasum": ""
             },
             "require": {
@@ -1261,7 +1261,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.30.0"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.34.1"
             },
             "funding": [
                 {
@@ -1269,7 +1269,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-09-26T22:10:43+00:00"
+            "time": "2023-10-03T23:51:05+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -3765,16 +3765,16 @@
         },
         {
             "name": "sebastianfeldmann/git",
-            "version": "3.8.9",
+            "version": "3.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianfeldmann/git.git",
-                "reference": "38586be69b0932b630337afcc8db12e5b7981254"
+                "reference": "11c85123216b32985f8f0b8547a52390d87d544e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianfeldmann/git/zipball/38586be69b0932b630337afcc8db12e5b7981254",
-                "reference": "38586be69b0932b630337afcc8db12e5b7981254",
+                "url": "https://api.github.com/repos/sebastianfeldmann/git/zipball/11c85123216b32985f8f0b8547a52390d87d544e",
+                "reference": "11c85123216b32985f8f0b8547a52390d87d544e",
                 "shasum": ""
             },
             "require": {
@@ -3814,7 +3814,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianfeldmann/git/issues",
-                "source": "https://github.com/sebastianfeldmann/git/tree/3.8.9"
+                "source": "https://github.com/sebastianfeldmann/git/tree/3.9.2"
             },
             "funding": [
                 {
@@ -3822,7 +3822,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-03-30T16:37:34+00:00"
+            "time": "2023-10-04T10:59:08+00:00"
         },
         {
             "name": "spatie/array-to-xml",
@@ -4119,16 +4119,16 @@
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v6.3.4",
+            "version": "v6.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dependency-injection.git",
-                "reference": "68a5a9570806a087982f383f6109c5e925892a49"
+                "reference": "2ed62b3bf98346e1f45529a7b6be2196739bb993"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/68a5a9570806a087982f383f6109c5e925892a49",
-                "reference": "68a5a9570806a087982f383f6109c5e925892a49",
+                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/2ed62b3bf98346e1f45529a7b6be2196739bb993",
+                "reference": "2ed62b3bf98346e1f45529a7b6be2196739bb993",
                 "shasum": ""
             },
             "require": {
@@ -4180,7 +4180,7 @@
             "description": "Allows you to standardize and centralize the way objects are constructed in your application",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/dependency-injection/tree/v6.3.4"
+                "source": "https://github.com/symfony/dependency-injection/tree/v6.3.5"
             },
             "funding": [
                 {
@@ -4196,7 +4196,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-08-16T17:55:17+00:00"
+            "time": "2023-09-25T16:46:40+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -4486,16 +4486,16 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v6.3.3",
+            "version": "v6.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "9915db259f67d21eefee768c1abcf1cc61b1fc9e"
+                "reference": "a1b31d88c0e998168ca7792f222cbecee47428c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/9915db259f67d21eefee768c1abcf1cc61b1fc9e",
-                "reference": "9915db259f67d21eefee768c1abcf1cc61b1fc9e",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/a1b31d88c0e998168ca7792f222cbecee47428c4",
+                "reference": "a1b31d88c0e998168ca7792f222cbecee47428c4",
                 "shasum": ""
             },
             "require": {
@@ -4530,7 +4530,7 @@
             "description": "Finds files and directories via an intuitive fluent interface",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/finder/tree/v6.3.3"
+                "source": "https://github.com/symfony/finder/tree/v6.3.5"
             },
             "funding": [
                 {
@@ -4546,7 +4546,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-31T08:31:44+00:00"
+            "time": "2023-09-26T12:56:25+00:00"
         },
         {
             "name": "symfony/options-resolver",
@@ -5314,16 +5314,16 @@
         },
         {
             "name": "symfony/string",
-            "version": "v6.3.2",
+            "version": "v6.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "53d1a83225002635bca3482fcbf963001313fb68"
+                "reference": "13d76d0fb049051ed12a04bef4f9de8715bea339"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/53d1a83225002635bca3482fcbf963001313fb68",
-                "reference": "53d1a83225002635bca3482fcbf963001313fb68",
+                "url": "https://api.github.com/repos/symfony/string/zipball/13d76d0fb049051ed12a04bef4f9de8715bea339",
+                "reference": "13d76d0fb049051ed12a04bef4f9de8715bea339",
                 "shasum": ""
             },
             "require": {
@@ -5380,7 +5380,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v6.3.2"
+                "source": "https://github.com/symfony/string/tree/v6.3.5"
             },
             "funding": [
                 {
@@ -5396,20 +5396,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-05T08:41:27+00:00"
+            "time": "2023-09-18T10:38:32+00:00"
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v6.3.4",
+            "version": "v6.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "2027be14f8ae8eae999ceadebcda5b4909b81d45"
+                "reference": "3d9999376be5fea8de47752837a3e1d1c5f69ef5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/2027be14f8ae8eae999ceadebcda5b4909b81d45",
-                "reference": "2027be14f8ae8eae999ceadebcda5b4909b81d45",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/3d9999376be5fea8de47752837a3e1d1c5f69ef5",
+                "reference": "3d9999376be5fea8de47752837a3e1d1c5f69ef5",
                 "shasum": ""
             },
             "require": {
@@ -5464,7 +5464,7 @@
                 "dump"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-dumper/tree/v6.3.4"
+                "source": "https://github.com/symfony/var-dumper/tree/v6.3.5"
             },
             "funding": [
                 {
@@ -5480,7 +5480,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-08-24T14:51:05+00:00"
+            "time": "2023-09-12T10:11:35+00:00"
         },
         {
             "name": "symfony/var-exporter",

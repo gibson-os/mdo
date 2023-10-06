@@ -15,6 +15,8 @@ class Client
 
     private ?string $databaseName = null;
 
+    private bool $transaction = false;
+
     /**
      * @throws ClientException
      */
@@ -168,5 +170,36 @@ class Client
         }
 
         return $parameterTypes;
+    }
+
+    public function startTransaction(): void
+    {
+        $this->execute('START TRANSACTION');
+        $this->transaction = true;
+    }
+
+    public function commit(): void
+    {
+        if ($this->transaction) {
+            return;
+        }
+
+        $this->execute('COMMIT');
+        $this->transaction = false;
+    }
+
+    public function rollback(): void
+    {
+        if ($this->transaction) {
+            return;
+        }
+
+        $this->execute('ROLLBACK');
+        $this->transaction = false;
+    }
+
+    public function isTransaction(): bool
+    {
+        return $this->transaction;
     }
 }
