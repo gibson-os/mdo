@@ -24,6 +24,16 @@ trait OrderByTrait
         return $this;
     }
 
+    /**
+     * @param array<string, OrderDirection> $orders
+     */
+    public function setOrders(array $orders): self
+    {
+        $this->orders = $orders;
+
+        return $this;
+    }
+
     protected function getOrderString(): string
     {
         $orders = [];

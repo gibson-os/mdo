@@ -174,13 +174,17 @@ class Client
 
     public function startTransaction(): void
     {
+        if ($this->transaction) {
+            return;
+        }
+
         $this->execute('START TRANSACTION');
         $this->transaction = true;
     }
 
     public function commit(): void
     {
-        if ($this->transaction) {
+        if (!$this->transaction) {
             return;
         }
 
@@ -190,7 +194,7 @@ class Client
 
     public function rollback(): void
     {
-        if ($this->transaction) {
+        if (!$this->transaction) {
             return;
         }
 
