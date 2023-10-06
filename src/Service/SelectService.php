@@ -28,4 +28,13 @@ class SelectService
 
         return $selectFields;
     }
+
+    public function getUnescapedRegexString(string $search): string
+    {
+        $search = str_replace('.', '\.', $search);
+        $search = str_replace('?', '.', $search);
+        $search = str_replace('*', '.*', $search);
+
+        return '[[:<:]]' . $search . '[[:>:]]';
+    }
 }
