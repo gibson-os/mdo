@@ -66,7 +66,7 @@ class Client
             $query = $query->getQuery();
         }
 
-        $statement = $this->mysqli->prepare($query);
+        $statement = $this->mysqli->prepare($this->replaceNamedParameters($query));
 
         if (!$statement instanceof mysqli_stmt) {
             throw new ClientException(sprintf(
@@ -97,6 +97,11 @@ class Client
         return $this->databaseName;
     }
 
+    private function replaceNamedParameters(string $query): string
+    {
+        return preg_replace('/:\w+/', '?', $query);
+    }
+
     /**
      * @throws ClientException
      */
@@ -104,15 +109,21 @@ class Client
     {
         $longData = [];
 
-        preg_match_all('/:\w+/', $query, $namedParameters);
+        preg_match_all('/(:\w+|\?)/', $query, $namedParameters);
         $namedParameters = $namedParameters[0];
 
         if (count($namedParameters)) {
-            preg_replace('/:\w+/', '?', $query);
+            $parameterCount = 0;
             $newParameters = [];
 
             foreach ($namedParameters as $namedParameter) {
-                $newParameters[] = $parameters[$namedParameter];
+                if ($namedParameter === '?') {
+                    $newParameters[] = $parameters[$parameterCount++];
+
+                    continue;
+                }
+
+                $newParameters[] = $parameters[mb_substr($namedParameter, 1)];
             }
 
             $parameters = $newParameters;
