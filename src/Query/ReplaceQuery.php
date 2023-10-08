@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace MDO\Query;
 
-use MDO\Dto\Field;
 use MDO\Dto\Table;
 use MDO\Dto\Value;
 
 class ReplaceQuery implements QueryInterface
 {
+    use SetTrait;
+
     /**
      * @param Value[] $values
      */
@@ -23,7 +24,7 @@ class ReplaceQuery implements QueryInterface
 
     public function getQuery(): string
     {
-        $setString = $this->getSetString();
+        $setString = $this->getSetString($this->table, $this->values);
 
         return trim(sprintf(
             'INSERT INTO `%s` SET %s ON DUPLICATE KEY UPDATE %s',
@@ -43,40 +44,6 @@ class ReplaceQuery implements QueryInterface
         $this->values = $values;
 
         return $this;
-    }
-
-    private function getSetString(): string
-    {
-        $set = [];
-
-        foreach ($this->table->getFields() as $field) {
-            if (!array_key_exists($field->getName(), $this->values)) {
-                continue;
-            }
-
-            $set[] = $this->getFieldSetString($field, $this->values[$field->getName()]);
-        }
-
-        return implode(', ', $set);
-    }
-
-    private function getFieldSetString(Field $field, ?Value $value): string
-    {
-        if ($value === null) {
-            return sprintf('`%s`=NULL', $field->getName());
-        }
-
-        $valueValue = $value->getValue();
-
-        if ($valueValue === null) {
-            return sprintf('`%s`=NULL', $field->getName());
-        }
-
-        if ($value->hasParameter()) {
-            return sprintf('`%s`=?', $field->getName());
-        }
-
-        return sprintf('`%s`=%s', $field->getName(), $valueValue);
     }
 
     public function getParameters(): array

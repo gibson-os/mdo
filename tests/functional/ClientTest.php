@@ -191,4 +191,85 @@ class ClientTest extends AbstractFunctionalTest
         $this->assertEquals(42, $record->get('ford_id')->getValue());
         $this->assertEquals('GET', $record->get('method')->getValue());
     }
+
+    public function testMixedParametersMultipleWhere(): void
+    {
+        $table = $this->tableManager->getTable('arthur');
+
+        $replaceQuery = new ReplaceQuery(
+            $table,
+            [
+                'name' => new Value('dent'),
+                'ford_id' => new Value(42),
+                'method' => new Value('GET'),
+            ],
+        );
+        $this->client->execute($replaceQuery);
+
+        $selectQuery = (new SelectQuery($table))
+            ->addWhere(new Where('`method`=:method', ['method' => 'GET']))
+            ->addWhere(new Where('`name`=?', ['dent']))
+        ;
+        $result = $this->client->execute($selectQuery);
+        $record = $result->iterateRecords()->current();
+
+        $this->assertEquals('dent', $record->get('name')->getValue());
+        $this->assertNull($record->get('description')->getValue());
+        $this->assertEquals(42, $record->get('ford_id')->getValue());
+        $this->assertEquals('GET', $record->get('method')->getValue());
+    }
+
+    public function testMixedParametersMultipleWhereReverseOrder(): void
+    {
+        $table = $this->tableManager->getTable('arthur');
+
+        $replaceQuery = new ReplaceQuery(
+            $table,
+            [
+                'name' => new Value('dent'),
+                'ford_id' => new Value(42),
+                'method' => new Value('GET'),
+            ],
+        );
+        $this->client->execute($replaceQuery);
+
+        $selectQuery = (new SelectQuery($table))
+            ->addWhere(new Where('`name`=?', ['dent']))
+            ->addWhere(new Where('`method`=:method', ['method' => 'GET']))
+        ;
+        $result = $this->client->execute($selectQuery);
+        $record = $result->iterateRecords()->current();
+
+        $this->assertEquals('dent', $record->get('name')->getValue());
+        $this->assertNull($record->get('description')->getValue());
+        $this->assertEquals(42, $record->get('ford_id')->getValue());
+        $this->assertEquals('GET', $record->get('method')->getValue());
+    }
+
+    public function testMultipleWhere(): void
+    {
+        $table = $this->tableManager->getTable('arthur');
+
+        $replaceQuery = new ReplaceQuery(
+            $table,
+            [
+                'name' => new Value('dent'),
+                'ford_id' => new Value(42),
+                'method' => new Value('GET'),
+            ],
+        );
+        $this->client->execute($replaceQuery);
+
+        $selectQuery = (new SelectQuery($table))
+            ->addWhere(new Where('`name`=:name', ['name' => 'dent']))
+            ->addWhere(new Where('`method`=:method', ['method' => 'GET']))
+        ;
+        $result = $this->client->execute($selectQuery);
+        $record = $result->iterateRecords()->current();
+
+        $this->assertEquals('dent', $record->get('name')->getValue());
+        $this->assertNull($record->get('description')->getValue());
+        $this->assertEquals(42, $record->get('ford_id')->getValue());
+        $this->assertEquals('GET', $record->get('method')->getValue());
+    }
 }
