@@ -9,37 +9,45 @@ use MDO\Dto\Value;
 
 trait SetTrait
 {
-    private function getSetString(Table $table, array $values): string
+    private function getSetString(Table $table, array $values, string $alias = null): string
     {
         $set = [];
 
         foreach ($table->getFields() as $field) {
-            if (!array_key_exists($field->getName(), $values)) {
+            $fieldName = $field->getName();
+
+            if (!array_key_exists($fieldName, $values)) {
                 continue;
             }
 
-            $set[] = $this->getFieldSetString($field, $values[$field->getName()]);
+            $set[] = $this->getFieldSetString($field, $values[$fieldName], $alias);
         }
 
         return implode(', ', $set);
     }
 
-    private function getFieldSetString(Field $field, ?Value $value): string
+    private function getFieldSetString(Field $field, ?Value $value, string $alias = null): string
     {
+        $fieldName = sprintf('`%s`', $field->getName());
+
+        if ($alias !== null) {
+            $fieldName = sprintf('`%s`.%s', $alias, $fieldName);
+        }
+
         if ($value === null) {
-            return sprintf('`%s`=NULL', $field->getName());
+            return sprintf('`%s`=NULL', $fieldName);
         }
 
         $valueValue = $value->getValue();
 
         if ($valueValue === null) {
-            return sprintf('`%s`=NULL', $field->getName());
+            return sprintf('%s=NULL', $fieldName);
         }
 
         if ($value->hasParameter()) {
-            return sprintf('`%s`=?', $field->getName());
+            return sprintf('%s=:%s', $fieldName, $field->getName());
         }
 
-        return sprintf('`%s`=%s', $field->getName(), $valueValue);
+        return sprintf('%s=%s', $fieldName, $valueValue);
     }
 }

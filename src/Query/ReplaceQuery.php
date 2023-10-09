@@ -51,19 +51,21 @@ class ReplaceQuery implements QueryInterface
         $parameters = [];
 
         foreach ($this->table->getFields() as $field) {
-            if (!isset($this->values[$field->getName()])) {
+            $fieldName = $field->getName();
+
+            if (!isset($this->values[$fieldName])) {
                 continue;
             }
 
-            $value = $this->values[$field->getName()];
+            $value = $this->values[$fieldName];
 
             if (!$value->hasParameter()) {
                 continue;
             }
 
-            $parameters[] = $value->getValue();
+            $parameters[$fieldName] = $value->getValue();
         }
 
-        return array_merge($parameters, $parameters);
+        return $parameters;
     }
 }

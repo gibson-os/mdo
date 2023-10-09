@@ -8,7 +8,9 @@ use MDO\Dto\Value;
 
 class UpdateQuery implements QueryInterface
 {
-    use WhereTrait;
+    use WhereTrait {
+        getParameters as getWhereParameters;
+    }
     use LimitTrait;
     use JoinTrait;
     use SetTrait;
@@ -43,20 +45,43 @@ class UpdateQuery implements QueryInterface
 
     public function getQuery(): string
     {
-        $setString = $this->getSetString($this->table, $this->values);
+        $setString = $this->getSetString($this->table, $this->values, $this->alias);
         $whereString = $this->getWhereString();
         $orderString = $this->getOrderString();
         $limitString = $this->getLimitString();
 
         return trim(sprintf(
-            'UPDATE `%s`%s %s SET %s%s%s%s',
+            'UPDATE `%s`%s %s SET %s WHERE %s%s%s',
             $this->table->getTableName(),
             $this->alias === null ? '' : ' `' . $this->alias . '`',
             trim($this->getJoinsString()),
             $setString,
-            $whereString === '' ? '' : ' WHERE ' . $whereString,
+            $whereString,
             $orderString === '' ? '' : ' ORDER BY ' . $orderString,
             $limitString === '' ? '' : ' LIMIT ' . $limitString,
         ));
+    }
+
+    public function getParameters(): array
+    {
+        $parameters = $this->getWhereParameters();
+
+        foreach ($this->table->getFields() as $field) {
+            $fieldName = $field->getName();
+
+            if (!isset($this->values[$fieldName])) {
+                continue;
+            }
+
+            $value = $this->values[$fieldName];
+
+            if (!$value->hasParameter()) {
+                continue;
+            }
+
+            $parameters[$fieldName] = $value->getValue();
+        }
+
+        return $parameters;
     }
 }

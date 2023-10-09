@@ -47,11 +47,11 @@ class ReplaceQueryTest extends Unit
         ]);
 
         $this->assertEquals(
-            'INSERT INTO `galaxy` SET `marvin`=?, `arthur`=?, `ford`=NULL, `42`=42 ON DUPLICATE KEY UPDATE `marvin`=?, `arthur`=?, `ford`=NULL, `42`=42',
+            'INSERT INTO `galaxy` SET `marvin`=:marvin, `arthur`=:arthur, `ford`=NULL, `42`=42 ON DUPLICATE KEY UPDATE `marvin`=:marvin, `arthur`=:arthur, `ford`=NULL, `42`=42',
             $query->getQuery(),
         );
         $this->assertEquals(
-            [42, 'dent', 42, 'dent'],
+            ['marvin' => 42, 'arthur' => 'dent'],
             $query->getParameters(),
         );
     }
