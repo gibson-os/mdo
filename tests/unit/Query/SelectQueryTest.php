@@ -38,6 +38,22 @@ class SelectQueryTest extends Unit
         );
     }
 
+    public function testGetQueryWithDistinct(): void
+    {
+        $query = (new SelectQuery($this->table))
+            ->setDistinct(true)
+        ;
+
+        $this->assertEquals(
+            'SELECT DISTINCT (`arthur`) `arthur` FROM `galaxy`',
+            $query->getQuery(),
+        );
+        $this->assertEquals(
+            [],
+            $query->getParameters(),
+        );
+    }
+
     public function testGetQueryOverwriteSelect(): void
     {
         $query = new SelectQuery($this->table);

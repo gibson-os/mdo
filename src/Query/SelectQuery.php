@@ -25,6 +25,8 @@ class SelectQuery implements QueryInterface
 
     private ?string $having = null;
 
+    private bool $distinct = false;
+
     public function __construct(private readonly Table $table, private readonly ?string $alias = null)
     {
         $this->selects = array_map(
@@ -52,7 +54,8 @@ class SelectQuery implements QueryInterface
         $limitString = $this->getLimitString();
 
         return trim(sprintf(
-            'SELECT %s FROM `%s`%s %s%s%s%s%s%s',
+            'SELECT %s%s FROM `%s`%s %s%s%s%s%s%s',
+            $this->distinct ? 'DISTINCT ' : '',
             $selectString,
             $this->table->getTableName(),
             $this->alias === null ? '' : ' `' . $this->alias . '`',
@@ -88,6 +91,13 @@ class SelectQuery implements QueryInterface
     {
         $this->groups = $fieldNames;
         $this->having = $having;
+
+        return $this;
+    }
+
+    public function setDistinct(bool $distinct): SelectQuery
+    {
+        $this->distinct = $distinct;
 
         return $this;
     }
