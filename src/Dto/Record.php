@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace MDO\Dto;
 
+use MDO\Exception\RecordException;
 use UnexpectedValueException;
 
 class Record
@@ -38,8 +39,15 @@ class Record
         return $values;
     }
 
-    public function get(string $key): ?Value
+    /**
+     * @throws RecordException
+     */
+    public function get(string $key): Value
     {
-        return $this->values[$key] ?? null;
+        return $this->values[$key] ?? throw new RecordException(sprintf(
+            'Key "%s" not found. Possible keys: %s',
+            $key,
+            implode(', ', array_keys($this->values)),
+        ));
     }
 }
