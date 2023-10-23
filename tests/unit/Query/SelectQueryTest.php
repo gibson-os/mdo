@@ -111,7 +111,7 @@ class SelectQueryTest extends Unit
         ;
 
         $this->assertEquals(
-            'SELECT (`arthur`) `arthur` FROM `galaxy` `g` ' .
+            'SELECT (`g`.`arthur`) `arthur` FROM `galaxy` `g` ' .
             'JOIN `marvin` `m` ON `g`.`id`=`m`.`galaxy_id` ' .
             'LEFT JOIN `42` `z` ON `on`',
             $query->getQuery(),

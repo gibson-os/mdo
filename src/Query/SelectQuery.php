@@ -30,7 +30,11 @@ class SelectQuery implements QueryInterface
     public function __construct(private readonly Table $table, private readonly ?string $alias = null)
     {
         $this->selects = array_map(
-            static fn (Field $field): string => sprintf('`%s`', $field->getName()),
+            fn (Field $field): string => sprintf(
+                '%s`%s`',
+                $this->alias === null ? '' : '`' . $this->alias . '`.',
+                $field->getName(),
+            ),
             $this->table->getFields(),
         );
     }
