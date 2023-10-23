@@ -23,12 +23,13 @@ class ReplaceService
     {
         $this->client->execute($replaceQuery);
         $result = $this->client->execute($this->getSelectQuery($replaceQuery));
+        $current = $result->iterateRecords()->current();
 
-        if ($result === null) {
+        if ($current === null) {
             throw new ClientException('Query returns no result!');
         }
 
-        return $result->iterateRecords()->current();
+        return $current;
     }
 
     public function getSelectQuery(ReplaceQuery $replaceQuery, string $alias = 't'): SelectQuery

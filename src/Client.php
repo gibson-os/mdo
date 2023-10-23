@@ -7,6 +7,7 @@ use MDO\Dto\Result;
 use MDO\Exception\ClientException;
 use MDO\Query\QueryInterface;
 use mysqli;
+use mysqli_sql_exception;
 use mysqli_stmt;
 
 class Client
@@ -59,7 +60,7 @@ class Client
     /**
      * @throws ClientException
      */
-    public function execute(string|QueryInterface $query, array $parameters = []): ?Result
+    public function execute(string|QueryInterface $query, array $parameters = []): Result
     {
         if ($query instanceof QueryInterface) {
             $parameters = $query->getParameters();
@@ -79,17 +80,21 @@ class Client
             $this->setParameters($query, $parameters, $statement);
         }
 
-        if (!$statement->execute()) {
-            throw new ClientException(sprintf(
-                'Error: %s | Query: %s',
-                $this->getError(),
-                $query,
-            ));
+        try {
+            if (!$statement->execute()) {
+                throw new ClientException(sprintf(
+                    'Error: %s | Query: %s',
+                    $this->getError(),
+                    $query,
+                ));
+            }
+        } catch (mysqli_sql_exception $exception) {
+            throw new ClientException($exception->getMessage(), previous: $exception);
         }
 
         $result = $statement->get_result();
 
-        return $result === false ? null : new Result($result);
+        return new Result($result ?: null);
     }
 
     public function getDatabaseName(): ?string

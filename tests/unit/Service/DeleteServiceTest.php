@@ -8,6 +8,7 @@ use MDO\Client;
 use MDO\Dto\Field;
 use MDO\Dto\Query\Where;
 use MDO\Dto\Record;
+use MDO\Dto\Result;
 use MDO\Dto\Table;
 use MDO\Dto\Value;
 use MDO\Enum\Type;
@@ -44,7 +45,7 @@ class DeleteServiceTest extends Unit
         ;
         $this->client->execute($deleteQuery)
             ->shouldBeCalledOnce()
-            ->willReturn(null)
+            ->willReturn(new Result(null))
         ;
         $this->deleteService->deleteRecord($this->table, new Record(['arthur' => new Value(42), 'ford' => new Value(null)]));
     }

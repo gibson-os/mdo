@@ -26,7 +26,7 @@ class FieldLoader
         $result = $this->client->execute(sprintf('SHOW FIELDS FROM `%s`', $tableName));
         $fields = [];
 
-        foreach ($result?->iterateRecords() ?? [] as $field) {
+        foreach ($result->iterateRecords() as $field) {
             $type = $field->get('Type')->getValue();
             $length = 0;
 

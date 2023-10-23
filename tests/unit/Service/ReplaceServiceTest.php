@@ -46,7 +46,7 @@ class ReplaceServiceTest extends Unit
         $replaceQuery = new ReplaceQuery($this->table, $values);
         $this->client->execute($replaceQuery)
             ->shouldBeCalledOnce()
-            ->willReturn(null)
+            ->willReturn(new Result(null))
         ;
         $selectQuery = (new SelectQuery($this->table, 't'))
             ->addWhere(new Where('`t`.`arthur`=?', [42]))
