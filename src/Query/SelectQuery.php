@@ -9,7 +9,9 @@ use MDO\Dto\Table;
 class SelectQuery implements QueryInterface
 {
     use JoinTrait;
-    use WhereTrait;
+    use WhereTrait {
+        getParameters as getWhereParameters;
+    }
     use LimitTrait;
     use OrderByTrait;
 
@@ -26,6 +28,8 @@ class SelectQuery implements QueryInterface
     private ?string $having = null;
 
     private bool $distinct = false;
+
+    private array $parameters = [];
 
     public function __construct(private readonly Table $table, private readonly ?string $alias = null)
     {
@@ -120,5 +124,17 @@ class SelectQuery implements QueryInterface
     private function getGroupString(): string
     {
         return implode(', ', $this->groups);
+    }
+
+    public function getParameters(): array
+    {
+        return array_merge($this->getWhereParameters(), $this->parameters);
+    }
+
+    public function addParameters(array $parameters): SelectQuery
+    {
+        $this->parameters = array_merge($this->parameters, $parameters);
+
+        return $this;
     }
 }
