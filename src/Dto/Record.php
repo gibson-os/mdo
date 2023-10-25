@@ -50,4 +50,15 @@ class Record
             implode(', ', array_keys($this->values)),
         ));
     }
+
+    /**
+     * @return array<float|int|string|null>
+     */
+    public function getValuesAsArray(): array
+    {
+        return array_map(
+            static fn (Value $value): float|int|null|string => $value->getValue(),
+            $this->values,
+        );
+    }
 }
