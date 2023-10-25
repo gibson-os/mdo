@@ -54,11 +54,11 @@ class Record
     /**
      * @return array<float|int|string|null>
      */
-    public function getValuesAsArray(): array
+    public function getValuesAsArray(string $prefix = ''): array
     {
         return array_map(
             static fn (Value $value): float|int|null|string => $value->getValue(),
-            $this->values,
+            $this->getValues($prefix),
         );
     }
 }
