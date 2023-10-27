@@ -21,19 +21,23 @@ class Client
     /**
      * @throws ClientException
      */
-    public function __construct(
-        private readonly string $host,
-        private readonly string $user,
-        private readonly string $password,
-        string $databaseName = null,
-    ) {
-        $this->mysqli = new mysqli($this->host, $this->user, $this->password);
-        $this->execute('SET NAMES "utf8"');
-        $this->execute('SET CHARACTER SET utf8');
+    public function __construct(string $host, string $user, string $password, string $databaseName = null)
+    {
+        $this->connect($host, $user, $password);
 
         if ($databaseName !== null) {
             $this->useDatabase($databaseName);
         }
+    }
+
+    /**
+     * @throws ClientException
+     */
+    public function connect(string $host, string $user, string $password): void
+    {
+        $this->mysqli = new mysqli($host, $user, $password);
+        $this->execute('SET NAMES "utf8"');
+        $this->execute('SET CHARACTER SET utf8');
     }
 
     public function useDatabase(string $databaseName): bool
