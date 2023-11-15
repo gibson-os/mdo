@@ -198,7 +198,7 @@ class Client
             return;
         }
 
-        $this->execute('START TRANSACTION');
+        $this->mysqli->query('START TRANSACTION');
         $this->transaction = true;
     }
 
@@ -208,7 +208,7 @@ class Client
             return;
         }
 
-        $this->execute('COMMIT');
+        $this->mysqli->query('COMMIT');
         $this->transaction = false;
     }
 
@@ -218,7 +218,7 @@ class Client
             return;
         }
 
-        $this->execute('ROLLBACK');
+        $this->mysqli->query('ROLLBACK');
         $this->transaction = false;
     }
 
