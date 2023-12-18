@@ -15,7 +15,7 @@ class FieldLoaderTest extends AbstractFunctionalTest
             [
                 'id' => new Field('id', false, Type::BIGINT, 'PRI', null, 'auto_increment', 20),
                 'name' => new Field('name', false, Type::VARCHAR, 'MUL', null, '', 32),
-                'description' => new Field('description', true, Type::LONGTEXT, '', null, ''),
+                'description' => new Field('description', true, Type::BLOB, '', null, ''),
                 'ford_id' => new Field('ford_id', false, Type::BIGINT, '', null, '', 20),
                 'method' => new Field('method', false, Type::ENUM, '', null, ''),
             ],

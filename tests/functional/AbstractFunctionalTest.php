@@ -34,7 +34,7 @@ class AbstractFunctionalTest extends Unit
             '(' .
                 '`id` bigint(20) unsigned auto_increment primary key, ' .
                 '`name` varchar(32) not null, ' .
-                '`description` longtext null, ' .
+                '`description` blob null, ' .
                 '`ford_id` bigint(20) unsigned not null, ' .
                 '`method` enum ("GET", "POST", "DELETE", "HEAD", "PUT", "CONNECT", "OPTIONS", "TRACE", "PATCH") not null, ' .
                 'constraint `uniqueNameMethodTask_idModule_id` unique (`name`, `method`)' .

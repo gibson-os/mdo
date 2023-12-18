@@ -30,14 +30,10 @@ class Client
         }
     }
 
-    /**
-     * @throws ClientException
-     */
     public function connect(string $host, string $user, string $password): void
     {
         $this->mysqli = new mysqli($host, $user, $password);
-        $this->execute('SET NAMES "utf8"');
-        $this->execute('SET CHARACTER SET utf8');
+        $this->mysqli->set_charset('utf8');
     }
 
     public function useDatabase(string $databaseName): bool
@@ -152,7 +148,8 @@ class Client
         foreach ($longData as $index => $data) {
             if (!$statement->send_long_data($index, $data)) {
                 throw new ClientException(sprintf(
-                    'Send long data error. Indes: %d | Data: %s | Query: %s',
+                    'Send long data error. %s. Indes: %d | Data: %s | Query: %s',
+                    $statement->error,
                     $index,
                     $data,
                     $query,
@@ -161,7 +158,7 @@ class Client
         }
     }
 
-    private function getParameterTypes(array $parameters, array $longData): string
+    private function getParameterTypes(array $parameters, array &$longData): string
     {
         $parameterTypes = '';
 
@@ -173,6 +170,8 @@ class Client
             } elseif (is_object($parameter) && enum_exists($parameter::class)) {
                 $parameterTypes .= 's';
                 $parameters[$index] = $parameter->name;
+            } elseif (mb_detect_encoding($parameter) !== false) {
+                $parameterTypes .= 's';
             } else {
                 $length = strlen($parameter);
 
