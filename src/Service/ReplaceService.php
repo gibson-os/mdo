@@ -45,6 +45,10 @@ class ReplaceService
                 continue;
             }
 
+            if ($field->hasAutoIncrement() && $value->getValue() === 0) {
+                continue;
+            }
+
             if ($value->getValue() === null) {
                 $selectQuery->addWhere(new Where(sprintf('`%s`.`%s` IS NULL', $alias, $field->getName()), []));
 
