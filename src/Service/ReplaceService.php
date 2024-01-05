@@ -45,11 +45,13 @@ class ReplaceService
                 continue;
             }
 
-            if ($field->hasAutoIncrement() && $value->getValue() === 0) {
+            $parameterValue = $value->getValue();
+
+            if ($field->hasAutoIncrement() && $parameterValue === 0) {
                 continue;
             }
 
-            if ($value->getValue() === null) {
+            if ($parameterValue === null) {
                 $selectQuery->addWhere(new Where(sprintf('`%s`.`%s` IS NULL', $alias, $field->getName()), []));
 
                 continue;
@@ -59,7 +61,7 @@ class ReplaceService
                 continue;
             }
 
-            $selectQuery->addWhere(new Where(sprintf('`%s`.`%s`=?', $alias, $field->getName()), [$value->getValue()]));
+            $selectQuery->addWhere(new Where(sprintf('`%s`.`%s`=?', $alias, $field->getName()), [$parameterValue]));
         }
 
         return $selectQuery;
