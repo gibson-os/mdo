@@ -21,7 +21,7 @@ class Client
     /**
      * @throws ClientException
      */
-    public function __construct(string $host, string $user, string $password, string $databaseName = null)
+    public function __construct(string $host, string $user, string $password, ?string $databaseName = null)
     {
         $this->connect($host, $user, $password);
 

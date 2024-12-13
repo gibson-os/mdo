@@ -98,7 +98,7 @@ class mysqlTable
         $this->clearJoin();
     }
 
-    public function load(array|object $record = null): bool
+    public function load(array|object|null $record = null): bool
     {
         if (is_object($record)) {
             foreach ($this->fields as $field) {
@@ -134,7 +134,7 @@ class mysqlTable
         return true;
     }
 
-    public function appendSelectString(string|array $select, string $table = null): void
+    public function appendSelectString(string|array $select, ?string $table = null): void
     {
         if (is_array($select)) {
             $this->selectString .= ',' . $this->quoteSelectArray($select, $table);
@@ -143,7 +143,7 @@ class mysqlTable
         }
     }
 
-    public function setSelectString(string|array $select = null, string $table = null): void
+    public function setSelectString(string|array|null $select = null, ?string $table = null): void
     {
         if ($select) {
             if (is_array($select)) {
@@ -156,7 +156,7 @@ class mysqlTable
         }
     }
 
-    private function quoteSelectArray(array $select, string $table = null): string
+    private function quoteSelectArray(array $select, ?string $table = null): string
     {
         if ($table) {
             return '`' . $table . '`.`' . implode('`, `' . $table . '`.`', $select) . '`';
@@ -172,7 +172,7 @@ class mysqlTable
         return $this->connection->execute($this->sql, $this->whereParameters);
     }
 
-    public function getSelect(string $select = null): string
+    public function getSelect(?string $select = null): string
     {
         if (!$select) {
             $select = $this->selectString;
@@ -191,7 +191,7 @@ class mysqlTable
         return trim('SELECT ' . $this->selectFunc . $select . ' FROM `' . $this->database . '`.`' . $this->table . '`' . $this->joins . ' ' . $this->where . $this->groupBy . $this->having . $this->orderBy . $this->limit);
     }
 
-    public function select(bool $loadRecord = true, string $select = null): bool|int
+    public function select(bool $loadRecord = true, ?string $select = null): bool|int
     {
         $this->sql = $this->getSelect($select);
 
@@ -217,7 +217,7 @@ class mysqlTable
         return false;
     }
 
-    public function selectPrepared(bool $loadRecord = true, string $select = null): bool|int
+    public function selectPrepared(bool $loadRecord = true, ?string $select = null): bool|int
     {
         $this->sql = $this->getSelect($select);
 
@@ -254,7 +254,7 @@ class mysqlTable
     /**
      * @deprecated
      */
-    public function selectAggregate(string $function): array|null|false
+    public function selectAggregate(string $function): array|false|null
     {
         if (!$this->select(false, $function)) {
             return null;
@@ -263,7 +263,7 @@ class mysqlTable
         return $this->connection->fetchRow();
     }
 
-    public function selectAggregatePrepared(string $function): array|null|false
+    public function selectAggregatePrepared(string $function): array|false|null
     {
         if (!$this->selectPrepared(false, $function)) {
             return null;
@@ -504,7 +504,7 @@ class mysqlTable
         return $this;
     }
 
-    public function appendUnion(string $query = null, string $select = null): mysqlTable
+    public function appendUnion(?string $query = null, ?string $select = null): mysqlTable
     {
         if ($query) {
             $query = preg_replace('/;/', '', $query);
@@ -517,7 +517,7 @@ class mysqlTable
         return $this;
     }
 
-    public function setSelectFunc(string $function = null): mysqlTable
+    public function setSelectFunc(?string $function = null): mysqlTable
     {
         if ($function) {
             $this->selectFunc = $function . ' ';
@@ -528,7 +528,7 @@ class mysqlTable
         return $this;
     }
 
-    public function setWhere(string $where = null): mysqlTable
+    public function setWhere(?string $where = null): mysqlTable
     {
         if ($where) {
             $this->where = 'WHERE ' . $where . ' ';
@@ -539,7 +539,7 @@ class mysqlTable
         return $this;
     }
 
-    public function setGroupBy(string $groupBy = null, string $having = null): mysqlTable
+    public function setGroupBy(?string $groupBy = null, ?string $having = null): mysqlTable
     {
         if ($groupBy === null) {
             $this->groupBy = '';
@@ -552,14 +552,14 @@ class mysqlTable
         return $this;
     }
 
-    public function setOrderBy(string $orderBy = null): mysqlTable
+    public function setOrderBy(?string $orderBy = null): mysqlTable
     {
         $this->orderBy = $orderBy === null ? '' : 'ORDER BY ' . $orderBy . ' ';
 
         return $this;
     }
 
-    public function setLimit(int $rows = null, int $from = null): mysqlTable
+    public function setLimit(?int $rows = null, ?int $from = null): mysqlTable
     {
         if (!empty($from)) {
             $this->limit = 'LIMIT ' . $from . ', ' . $rows;
@@ -615,7 +615,7 @@ class mysqlTable
         return $this;
     }
 
-    public function addWhereParameter($value, string $key = null): mysqlTable
+    public function addWhereParameter($value, ?string $key = null): mysqlTable
     {
         if ($key === null) {
             $this->whereParameters[] = $value;

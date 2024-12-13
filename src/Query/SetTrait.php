@@ -9,7 +9,7 @@ use MDO\Dto\Value;
 
 trait SetTrait
 {
-    private function getSetString(Table $table, array $values, string $alias = null): string
+    private function getSetString(Table $table, array $values, ?string $alias = null): string
     {
         $set = [];
 
@@ -26,7 +26,7 @@ trait SetTrait
         return implode(', ', $set);
     }
 
-    private function getFieldSetString(Field $field, ?Value $value, string $alias = null): string
+    private function getFieldSetString(Field $field, ?Value $value, ?string $alias = null): string
     {
         $fieldName = sprintf('`%s`', $field->getName());
 

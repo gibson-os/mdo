@@ -12,6 +12,7 @@ class SelectQuery implements QueryInterface
     use WhereTrait {
         getParameters as getWhereParameters;
     }
+    use WithTrait;
     use LimitTrait;
     use OrderByTrait;
 
@@ -56,13 +57,15 @@ class SelectQuery implements QueryInterface
     public function getQuery(): string
     {
         $selectString = $this->getSelectString();
+        $withString = $this->getWithString();
         $whereString = $this->getWhereString();
         $groupString = $this->getGroupString();
         $orderString = $this->getOrderString();
         $limitString = $this->getLimitString();
 
         return trim(sprintf(
-            'SELECT %s%s FROM `%s`%s %s%s%s%s%s%s',
+            '%s SELECT %s%s FROM `%s`%s %s%s%s%s%s%s',
+            $withString,
             $this->distinct ? 'DISTINCT ' : '',
             $selectString,
             $this->table->getTableName(),
@@ -95,7 +98,7 @@ class SelectQuery implements QueryInterface
         return $this;
     }
 
-    public function setGroupBy(array $fieldNames, string $having = null): SelectQuery
+    public function setGroupBy(array $fieldNames, ?string $having = null): SelectQuery
     {
         $this->groups = $fieldNames;
         $this->having = $having;

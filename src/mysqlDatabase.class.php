@@ -9,7 +9,7 @@ class mysqlDatabase
 
     public string $sql;
 
-    public mysqli_result|null $result;
+    public ?mysqli_result $result;
 
     private string $databaseName;
 
@@ -19,7 +19,7 @@ class mysqlDatabase
     {
     }
 
-    public function openDB(string $database = null): bool
+    public function openDB(?string $database = null): bool
     {
         $this->Mysqli = new mysqli($this->host, $this->user, $this->pass);
         $this->Mysqli->query("SET NAMES 'utf8';");
@@ -148,17 +148,17 @@ class mysqlDatabase
         return true;
     }
 
-    public function fetchArray(): array|null|false
+    public function fetchArray(): array|false|null
     {
         return $this->result?->fetch_array();
     }
 
-    public function fetchRow(): array|null|false
+    public function fetchRow(): array|false|null
     {
         return $this->result?->fetch_row();
     }
 
-    public function fetchAssoc(): array|null|false
+    public function fetchAssoc(): array|false|null
     {
         return $this->result?->fetch_assoc();
     }
@@ -174,7 +174,7 @@ class mysqlDatabase
         return $object;
     }
 
-    public function fetchResult(int $field = 0): string|int|float|null|false
+    public function fetchResult(int $field = 0): string|int|float|false|null
     {
         if ($row = $this->fetchRow()) {
             return $row[$field];

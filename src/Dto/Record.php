@@ -57,7 +57,7 @@ class Record
     public function getValuesAsArray(string $prefix = ''): array
     {
         return array_map(
-            static fn (Value $value): float|int|null|string => $value->getValue(),
+            static fn (Value $value): float|int|string|null => $value->getValue(),
             $this->getValues($prefix),
         );
     }
