@@ -12,11 +12,17 @@ trait WithTrait
      */
     private array $withs = [];
 
+    /**
+     * @return With[]
+     */
     public function getWiths(): array
     {
         return $this->withs;
     }
 
+    /**
+     * @param $withs With[]
+     */
     public function setWiths(array $withs): self
     {
         foreach ($withs as $with) {
