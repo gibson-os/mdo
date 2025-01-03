@@ -21,7 +21,7 @@ trait WithTrait
     }
 
     /**
-     * @param $withs With[]
+     * @param With[] $withs
      */
     public function setWiths(array $withs): self
     {

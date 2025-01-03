@@ -12,6 +12,9 @@ trait OrderByTrait
      */
     private array $orders = [];
 
+    /**
+     * @return array<string, OrderDirection>
+     */
     public function getOrders(): array
     {
         return $this->orders;

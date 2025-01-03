@@ -79,11 +79,19 @@ class SelectQuery implements QueryInterface
         ));
     }
 
+    /**
+     * @return string[]
+     */
     public function getSelects(): array
     {
         return $this->selects;
     }
 
+    /**
+     * @param string[] $selects
+     *
+     * @return $this
+     */
     public function setSelects(array $selects): SelectQuery
     {
         $this->selects = $selects;
@@ -106,6 +114,9 @@ class SelectQuery implements QueryInterface
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getGroupBy(): array
     {
         return $this->groups;
