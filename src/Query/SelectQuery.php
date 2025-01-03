@@ -106,6 +106,16 @@ class SelectQuery implements QueryInterface
         return $this;
     }
 
+    public function getGroupBy(): array
+    {
+        return $this->groups;
+    }
+
+    public function getHaving(): ?string
+    {
+        return $this->having;
+    }
+
     public function setDistinct(bool $distinct): SelectQuery
     {
         $this->distinct = $distinct;
