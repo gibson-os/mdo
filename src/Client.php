@@ -33,7 +33,7 @@ class Client
     public function connect(string $host, string $user, string $password): void
     {
         $this->mysqli = new mysqli($host, $user, $password);
-        $this->mysqli->set_charset('utf8');
+        $this->mysqli->set_charset('utf8mb4');
     }
 
     public function useDatabase(string $databaseName): bool
